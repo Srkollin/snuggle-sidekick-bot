@@ -143,49 +143,47 @@ function PiscinasPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {pools.map((pool) => (
             <button
               key={pool.id}
               type="button"
               onClick={() => setSelected(pool)}
-              className="group overflow-hidden rounded-xl border border-border bg-card text-left transition-shadow hover:shadow-lg"
+              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xl"
             >
-              <div className="flex gap-4 p-3">
-                <div className="size-20 shrink-0 overflow-hidden rounded-lg bg-muted">
-                  {pool.photoUrl ? (
-                    <img
-                      src={pool.photoUrl}
-                      alt={`Piscina ${pool.name}`}
-                      loading="lazy"
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex size-full items-center justify-center text-muted-foreground">
-                      <Waves className="size-6" />
-                    </div>
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
+                {pool.photoUrl ? (
+                  <img
+                    src={pool.photoUrl}
+                    alt={`Piscina ${pool.name}`}
+                    loading="lazy"
+                    className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex size-full items-center justify-center bg-secondary text-muted-foreground">
+                    <Waves className="size-10 opacity-60" />
+                  </div>
+                )}
+                <span
+                  className={cn(
+                    "absolute right-3 top-3 inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium shadow-sm backdrop-blur",
+                    ESTADO_CLASSES[pool.status] ?? "border-border bg-muted text-muted-foreground",
                   )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h2 className="truncate font-display font-semibold">{pool.name}</h2>
-                  {pool.address && (
-                    <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
-                      <MapPin className="size-3 shrink-0" /> {pool.address}
-                    </p>
-                  )}
-                  <span
-                    className={cn(
-                      "mt-2 inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium",
-                      ESTADO_CLASSES[pool.status] ?? "border-border bg-muted text-muted-foreground",
-                    )}
-                  >
-                    {pool.status}
-                  </span>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    {pool.dosing_type === "Otros" ? pool.dosing_other : pool.dosing_type} ·{" "}
-                    {pool.has_kids_pool ? "Con piscina infantil" : "Sin piscina infantil"}
+                >
+                  {pool.status}
+                </span>
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col gap-1 p-4">
+                <h2 className="truncate font-display text-base font-semibold">{pool.name}</h2>
+                {pool.address && (
+                  <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
+                    <MapPin className="size-3 shrink-0" /> {pool.address}
                   </p>
-                </div>
+                )}
+                <p className="mt-2 truncate border-t border-border/60 pt-2 text-xs text-muted-foreground">
+                  {(pool.dosing_type === "Otros" ? pool.dosing_other : pool.dosing_type) || "Sin dosificación"} ·{" "}
+                  {pool.has_kids_pool ? "Con piscina infantil" : "Sin piscina infantil"}
+                </p>
               </div>
             </button>
           ))}
@@ -193,7 +191,7 @@ function PiscinasPage() {
       )}
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogContent className="max-h-[90vh] overflow-y-auto p-0 sm:max-w-2xl">
           {selected && <DetallePiscina pool={selected} />}
         </DialogContent>
       </Dialog>
@@ -203,54 +201,83 @@ function PiscinasPage() {
 
 function DetallePiscina({ pool }: { pool: Pool & { photoUrl?: string } }) {
   return (
-    <div className="space-y-4">
-      <DialogHeader>
-        <DialogTitle className="font-display text-2xl">{pool.name}</DialogTitle>
-      </DialogHeader>
-      {pool.photoUrl && (
-        <img src={pool.photoUrl} alt={`Piscina ${pool.name}`} className="h-48 w-full rounded-xl object-cover" />
-      )}
-      <span
-        className={cn(
-          "inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium",
-          ESTADO_CLASSES[pool.status] ?? "border-border bg-muted text-muted-foreground",
+    <div>
+      <div className="relative h-52 w-full overflow-hidden bg-secondary">
+        {pool.photoUrl ? (
+          <img src={pool.photoUrl} alt={`Piscina ${pool.name}`} className="size-full object-cover" />
+        ) : (
+          <div className="flex size-full items-center justify-center text-muted-foreground">
+            <Waves className="size-12 opacity-60" />
+          </div>
         )}
-      >
-        {pool.status}
-      </span>
-      <dl className="grid gap-2 text-sm">
-        <Row label="Dirección" value={pool.address ?? "—"} />
-        <Row
-          label="Tipo de dosificación"
-          value={pool.dosing_type === "Otros" ? pool.dosing_other || "Otros" : pool.dosing_type || "—"}
-        />
-        <Row label="Piscina infantil" value={pool.has_kids_pool ? pool.kids_name || "Sí" : "No"} />
-        {pool.has_kids_pool && (
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/80 to-transparent p-5">
+          <DialogHeader className="space-y-1 text-left">
+            <DialogTitle className="font-display text-2xl text-background">{pool.name}</DialogTitle>
+            {pool.address && (
+              <p className="flex items-center gap-1 text-xs text-background/80">
+                <MapPin className="size-3 shrink-0" /> {pool.address}
+              </p>
+            )}
+          </DialogHeader>
+        </div>
+        <span
+          className={cn(
+            "absolute right-4 top-4 inline-flex rounded-full border px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur",
+            ESTADO_CLASSES[pool.status] ?? "border-border bg-muted text-muted-foreground",
+          )}
+        >
+          {pool.status}
+        </span>
+      </div>
+
+      <div className="space-y-6 p-6">
+        <Section title="Tratamiento del agua">
           <Row
-            label="Dosificación infantil"
+            label="Tipo de dosificación"
+            value={pool.dosing_type === "Otros" ? pool.dosing_other || "Otros" : pool.dosing_type || "—"}
+          />
+          <Row label="Piscina infantil" value={pool.has_kids_pool ? pool.kids_name || "Sí" : "No"} />
+          {pool.has_kids_pool && (
+            <Row
+              label="Dosificación infantil"
+              value={
+                pool.kids_dosing_type === "Otros" ? pool.kids_dosing_other || "Otros" : pool.kids_dosing_type || "—"
+              }
+            />
+          )}
+        </Section>
+
+        <Section title="Personal asignado">
+          <Row label="Socorristas" value={pool.has_lifeguard ? String(pool.lifeguards_count) : "No"} />
+          <Row label="Porteros" value={pool.has_doorman ? String(pool.doormen_count) : "No"} />
+          <Row
+            label="Otros empleados"
             value={
-              pool.kids_dosing_type === "Otros" ? pool.kids_dosing_other || "Otros" : pool.kids_dosing_type || "—"
+              pool.other_staff?.length
+                ? pool.other_staff.map((o) => `${o.tipo} (${o.cantidad})`).join(", ")
+                : "No"
             }
           />
-        )}
-        <Row label="Socorristas" value={pool.has_lifeguard ? String(pool.lifeguards_count) : "No"} />
-        <Row label="Porteros" value={pool.has_doorman ? String(pool.doormen_count) : "No"} />
-        <Row
-          label="Otros empleados"
-          value={
-            pool.other_staff?.length
-              ? pool.other_staff.map((o) => `${o.tipo} (${o.cantidad})`).join(", ")
-              : "No"
-          }
-        />
-      </dl>
+        </Section>
+      </div>
     </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section>
+      <h3 className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">{title}</h3>
+      <dl className="divide-y divide-border/60 rounded-xl border border-border bg-muted/30 px-4 text-sm">
+        {children}
+      </dl>
+    </section>
   );
 }
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 border-b border-border/60 pb-1.5">
+    <div className="flex justify-between gap-4 py-2.5">
       <dt className="text-muted-foreground">{label}</dt>
       <dd className="text-right font-medium">{value}</dd>
     </div>
