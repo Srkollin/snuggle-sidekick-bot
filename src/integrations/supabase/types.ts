@@ -397,6 +397,11 @@ export type Database = {
         Row: {
           aerobic_count: number | null
           alerts: Json
+          attended_at: string | null
+          attended_by: string | null
+          attended_by_name: string | null
+          attention_notes: string | null
+          attention_status: string
           bathers_count: number | null
           bromine_total: number | null
           combined_chlorine: number | null
@@ -438,6 +443,11 @@ export type Database = {
         Insert: {
           aerobic_count?: number | null
           alerts?: Json
+          attended_at?: string | null
+          attended_by?: string | null
+          attended_by_name?: string | null
+          attention_notes?: string | null
+          attention_status?: string
           bathers_count?: number | null
           bromine_total?: number | null
           combined_chlorine?: number | null
@@ -479,6 +489,11 @@ export type Database = {
         Update: {
           aerobic_count?: number | null
           alerts?: Json
+          attended_at?: string | null
+          attended_by?: string | null
+          attended_by_name?: string | null
+          attention_notes?: string | null
+          attention_status?: string
           bathers_count?: number | null
           bromine_total?: number | null
           combined_chlorine?: number | null
