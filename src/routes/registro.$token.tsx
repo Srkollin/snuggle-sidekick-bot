@@ -110,12 +110,12 @@ function RegistroEmpleadoPage() {
   }
 
   async function send() {
-    if (fullName.trim().length < 2) return toast.error("Indica tu nombre y apellidos.");
-    if (!nationalId.trim()) return toast.error("Indica tu DNI o NIE.");
-    if (!phone.trim()) return toast.error("Indica tu teléfono.");
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) return toast.error("Indica un correo electrónico válido.");
-    if (hasSsn === "si" && !ssn.trim()) return toast.error("Indica tu número de la Seguridad Social.");
-    if (!iban.trim()) return toast.error("Indica el IBAN para el pago de la nómina.");
+    if (fullName.trim().length < 2) { toast.error("Indica tu nombre y apellidos."); return; }
+    if (!nationalId.trim()) { toast.error("Indica tu DNI o NIE."); return; }
+    if (!phone.trim()) { toast.error("Indica tu teléfono."); return; }
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) { toast.error("Indica un correo electrónico válido."); return; }
+    if (hasSsn === "si" && !ssn.trim()) { toast.error("Indica tu número de la Seguridad Social."); return; }
+    if (!iban.trim()) { toast.error("Indica el IBAN para el pago de la nómina."); return; }
 
     setSaving(true);
     try {

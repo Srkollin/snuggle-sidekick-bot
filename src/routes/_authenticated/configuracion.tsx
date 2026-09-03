@@ -50,14 +50,14 @@ function ConfiguracionPage() {
   }, [profile]);
 
   async function save() {
-    if (fullName.trim().length < 2) return toast.error("Indica tu nombre y apellidos.");
+    if (fullName.trim().length < 2) { toast.error("Indica tu nombre y apellidos."); return; }
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
       .update({ full_name: fullName.trim(), role_title: roleTitle.trim() || null, phone: phone.trim() || null })
       .eq("id", user.id);
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Datos actualizados.");
     queryClient.invalidateQueries({ queryKey: ["empresa"] });
   }

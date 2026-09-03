@@ -124,7 +124,7 @@ function PanelPage() {
           <StatCard icon={Users} title="Empleados" to="/empleados" cta="Ver empleados">
             <Big value={stats?.empleados.total ?? 0} label="en plantilla" />
             {ESTADOS_EMPLEADO.map((s) => (
-              <Line key={s} label={ESTADO_EMPLEADO_LABEL[s]} value={stats?.empleados.porEstado[s] ?? 0} />
+              <Line key={s} label={ESTADO_EMPLEADO_LABEL[s] ?? s} value={stats?.empleados.porEstado[s] ?? 0} />
             ))}
             <Line label="Pendientes de aprobar" value={stats?.empleados.pendientes ?? 0} />
           </StatCard>

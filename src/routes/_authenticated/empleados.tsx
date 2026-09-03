@@ -104,7 +104,7 @@ function EmpleadosPage() {
 
   async function updateEmployee(id: string, patch: Record<string, unknown>) {
     const { error } = await supabase.from("employees").update(patch as never).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     queryClient.invalidateQueries({ queryKey: ["employees", companyId] });
     queryClient.invalidateQueries({ queryKey: ["dashboard", companyId] });
     setSelected(null);
@@ -256,7 +256,7 @@ function EmpleadosPage() {
                   <SelectContent>
                     {ESTADOS_EMPLEADO.map((s) => (
                       <SelectItem key={s} value={s}>
-                        {ESTADO_EMPLEADO_LABEL[s]}
+                        {ESTADO_EMPLEADO_LABEL[s] ?? s}
                       </SelectItem>
                     ))}
                   </SelectContent>

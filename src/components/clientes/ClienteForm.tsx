@@ -70,11 +70,11 @@ export function ClienteForm({
 
   async function save(isDraft: boolean) {
     if (!isDraft) {
-      if (!name.trim()) return toast.error(`Indica el ${nombreLabel.toLowerCase()}.`);
-      if (!phone.trim()) return toast.error("El teléfono principal es obligatorio.");
-      if (!/^\S+@\S+\.\S+$/.test(email.trim())) return toast.error("Indica un correo electrónico válido.");
+      if (!name.trim()) { toast.error(`Indica el ${nombreLabel.toLowerCase()}.`); return; }
+      if (!phone.trim()) { toast.error("El teléfono principal es obligatorio."); return; }
+      if (!/^\S+@\S+\.\S+$/.test(email.trim())) { toast.error("Indica un correo electrónico válido."); return; }
     } else if (!name.trim()) {
-      return toast.error("Indica al menos un nombre para guardar el borrador.");
+      { toast.error("Indica al menos un nombre para guardar el borrador."); return; }
     }
 
     setSaving(true);
