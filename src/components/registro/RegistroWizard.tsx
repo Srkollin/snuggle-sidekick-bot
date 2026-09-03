@@ -170,11 +170,16 @@ export function RegistroWizard({ mode = "full", onComplete }: Props) {
       const { error: profileError } = await supabase.from("profiles").upsert({
         id: userId,
         company_id: company.id,
-        full_name: mode === "full" ? fullName.trim() : undefined,
-        role_title: mode === "full" ? roleTitle : undefined,
-        email: mode === "full" ? email.trim() : undefined,
-        phone: mode === "full" ? phone.trim() : undefined,
+        ...(mode === "full"
+          ? {
+              full_name: fullName.trim(),
+              role_title: roleTitle,
+              email: email.trim(),
+              phone: phone.trim() || null,
+            }
+          : {}),
       });
+
       if (profileError) throw profileError;
 
       onComplete();
