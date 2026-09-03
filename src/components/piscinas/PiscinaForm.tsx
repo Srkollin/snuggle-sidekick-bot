@@ -35,6 +35,30 @@ export function PiscinaForm({
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState<string>("Abierta");
+  const [clientId, setClientId] = useState<string>("");
+  const [clientSearch, setClientSearch] = useState("");
+  const [newClientOpen, setNewClientOpen] = useState(false);
+  const [openingDate, setOpeningDate] = useState("");
+  const [closingDate, setClosingDate] = useState("");
+  const [openAllYear, setOpenAllYear] = useState("no");
+
+  const queryClient = useQueryClient();
+  const { data: clients } = useQuery({
+    queryKey: ["clients", companyId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("clients")
+        .select("id, name, client_type")
+        .eq("company_id", companyId)
+        .order("name");
+      if (error) throw error;
+      return (data ?? []) as unknown as { id: string; name: string; client_type: string }[];
+    },
+  });
+
+  const filteredClients = (clients ?? []).filter((c) =>
+    c.name.toLowerCase().includes(clientSearch.trim().toLowerCase()),
+  );
   const [dosing, setDosing] = useState("Cloro");
   const [dosingOther, setDosingOther] = useState("");
 
