@@ -416,10 +416,46 @@ export function PiscinaForm({
         )}
       </Section>
 
+      <Section title="Empleados asignados">
+        {!empleados?.length ? (
+          <p className="text-sm text-muted-foreground">
+            Todavía no hay empleados registrados en tu empresa.
+          </p>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">
+            {empleados.map((e) => {
+              const checked = assigned.includes(e.id);
+              return (
+                <label
+                  key={e.id}
+                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-sm"
+                >
+                  <input
+                    type="checkbox"
+                    className="size-4 accent-primary"
+                    checked={checked}
+                    onChange={() =>
+                      setAssigned(checked ? assigned.filter((id) => id !== e.id) : [...assigned, e.id])
+                    }
+                  />
+                  <span className="min-w-0 truncate">
+                    {e.full_name}
+                    {e.roles?.length ? (
+                      <span className="text-muted-foreground"> · {e.roles.join(", ")}</span>
+                    ) : null}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        )}
+      </Section>
+
       <Button onClick={submit} disabled={saving}>
         {saving && <Loader2 className="mr-2 size-4 animate-spin" />}
-        Registrar piscina
+        {isEdit ? "Guardar cambios" : "Registrar piscina"}
       </Button>
+
     </div>
   );
 }
