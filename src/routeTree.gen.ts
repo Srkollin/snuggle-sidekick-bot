@@ -21,6 +21,8 @@ import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedPiscinasRouteImport } from './routes/_authenticated/piscinas'
 import { Route as AuthenticatedRutasRouteImport } from './routes/_authenticated/rutas'
 import { Route as RegistroTokenRouteImport } from './routes/registro.$token'
+import { Route as AuthenticatedLibroRegistrosIndexRouteImport } from './routes/_authenticated/libro-registros.index'
+import { Route as AuthenticatedLibroRegistrosPoolIdRouteImport } from './routes/_authenticated/libro-registros.$poolId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -84,6 +86,18 @@ const RegistroTokenRoute = RegistroTokenRouteImport.update({
   path: '/registro/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedLibroRegistrosIndexRoute =
+  AuthenticatedLibroRegistrosIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedLibroRegistrosRoute,
+  } as any)
+const AuthenticatedLibroRegistrosPoolIdRoute =
+  AuthenticatedLibroRegistrosPoolIdRouteImport.update({
+    id: '/$poolId',
+    path: '/$poolId',
+    getParentRoute: () => AuthenticatedLibroRegistrosRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -92,11 +106,13 @@ export interface FileRoutesByFullPath {
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/empleados': typeof AuthenticatedEmpleadosRoute
   '/facturacion': typeof AuthenticatedFacturacionRoute
-  '/libro-registros': typeof AuthenticatedLibroRegistrosRoute
+  '/libro-registros': typeof AuthenticatedLibroRegistrosRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
   '/piscinas': typeof AuthenticatedPiscinasRoute
   '/rutas': typeof AuthenticatedRutasRoute
   '/registro/$token': typeof RegistroTokenRoute
+  '/libro-registros/$poolId': typeof AuthenticatedLibroRegistrosPoolIdRoute
+  '/libro-registros/': typeof AuthenticatedLibroRegistrosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -105,11 +121,12 @@ export interface FileRoutesByTo {
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/empleados': typeof AuthenticatedEmpleadosRoute
   '/facturacion': typeof AuthenticatedFacturacionRoute
-  '/libro-registros': typeof AuthenticatedLibroRegistrosRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/piscinas': typeof AuthenticatedPiscinasRoute
   '/rutas': typeof AuthenticatedRutasRoute
   '/registro/$token': typeof RegistroTokenRoute
+  '/libro-registros/$poolId': typeof AuthenticatedLibroRegistrosPoolIdRoute
+  '/libro-registros': typeof AuthenticatedLibroRegistrosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -120,11 +137,13 @@ export interface FileRoutesById {
   '/_authenticated/configuracion': typeof AuthenticatedConfiguracionRoute
   '/_authenticated/empleados': typeof AuthenticatedEmpleadosRoute
   '/_authenticated/facturacion': typeof AuthenticatedFacturacionRoute
-  '/_authenticated/libro-registros': typeof AuthenticatedLibroRegistrosRoute
+  '/_authenticated/libro-registros': typeof AuthenticatedLibroRegistrosRouteWithChildren
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/_authenticated/piscinas': typeof AuthenticatedPiscinasRoute
   '/_authenticated/rutas': typeof AuthenticatedRutasRoute
   '/registro/$token': typeof RegistroTokenRoute
+  '/_authenticated/libro-registros/$poolId': typeof AuthenticatedLibroRegistrosPoolIdRoute
+  '/_authenticated/libro-registros/': typeof AuthenticatedLibroRegistrosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -140,6 +159,8 @@ export interface FileRouteTypes {
     | '/piscinas'
     | '/rutas'
     | '/registro/$token'
+    | '/libro-registros/$poolId'
+    | '/libro-registros/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -148,11 +169,12 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/empleados'
     | '/facturacion'
-    | '/libro-registros'
     | '/panel'
     | '/piscinas'
     | '/rutas'
     | '/registro/$token'
+    | '/libro-registros/$poolId'
+    | '/libro-registros'
   id:
     | '__root__'
     | '/'
@@ -167,6 +189,8 @@ export interface FileRouteTypes {
     | '/_authenticated/piscinas'
     | '/_authenticated/rutas'
     | '/registro/$token'
+    | '/_authenticated/libro-registros/$poolId'
+    | '/_authenticated/libro-registros/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,15 +286,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegistroTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/libro-registros/': {
+      id: '/_authenticated/libro-registros/'
+      path: '/'
+      fullPath: '/libro-registros/'
+      preLoaderRoute: typeof AuthenticatedLibroRegistrosIndexRouteImport
+      parentRoute: typeof AuthenticatedLibroRegistrosRoute
+    }
+    '/_authenticated/libro-registros/$poolId': {
+      id: '/_authenticated/libro-registros/$poolId'
+      path: '/$poolId'
+      fullPath: '/libro-registros/$poolId'
+      preLoaderRoute: typeof AuthenticatedLibroRegistrosPoolIdRouteImport
+      parentRoute: typeof AuthenticatedLibroRegistrosRoute
+    }
   }
 }
+
+interface AuthenticatedLibroRegistrosRouteChildren {
+  AuthenticatedLibroRegistrosPoolIdRoute: typeof AuthenticatedLibroRegistrosPoolIdRoute
+  AuthenticatedLibroRegistrosIndexRoute: typeof AuthenticatedLibroRegistrosIndexRoute
+}
+
+const AuthenticatedLibroRegistrosRouteChildren: AuthenticatedLibroRegistrosRouteChildren =
+  {
+    AuthenticatedLibroRegistrosPoolIdRoute:
+      AuthenticatedLibroRegistrosPoolIdRoute,
+    AuthenticatedLibroRegistrosIndexRoute:
+      AuthenticatedLibroRegistrosIndexRoute,
+  }
+
+const AuthenticatedLibroRegistrosRouteWithChildren =
+  AuthenticatedLibroRegistrosRoute._addFileChildren(
+    AuthenticatedLibroRegistrosRouteChildren,
+  )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
   AuthenticatedConfiguracionRoute: typeof AuthenticatedConfiguracionRoute
   AuthenticatedEmpleadosRoute: typeof AuthenticatedEmpleadosRoute
   AuthenticatedFacturacionRoute: typeof AuthenticatedFacturacionRoute
-  AuthenticatedLibroRegistrosRoute: typeof AuthenticatedLibroRegistrosRoute
+  AuthenticatedLibroRegistrosRoute: typeof AuthenticatedLibroRegistrosRouteWithChildren
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
   AuthenticatedPiscinasRoute: typeof AuthenticatedPiscinasRoute
   AuthenticatedRutasRoute: typeof AuthenticatedRutasRoute
@@ -281,7 +337,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConfiguracionRoute: AuthenticatedConfiguracionRoute,
   AuthenticatedEmpleadosRoute: AuthenticatedEmpleadosRoute,
   AuthenticatedFacturacionRoute: AuthenticatedFacturacionRoute,
-  AuthenticatedLibroRegistrosRoute: AuthenticatedLibroRegistrosRoute,
+  AuthenticatedLibroRegistrosRoute:
+    AuthenticatedLibroRegistrosRouteWithChildren,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
   AuthenticatedPiscinasRoute: AuthenticatedPiscinasRoute,
   AuthenticatedRutasRoute: AuthenticatedRutasRoute,
