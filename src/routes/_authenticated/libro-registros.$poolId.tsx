@@ -50,6 +50,17 @@ type Registro = {
   bromine_total: number | null;
   turbidity: number;
   vessel_status: string;
+  opening_time: string | null;
+  closing_time: string | null;
+  rest_start: string | null;
+  rest_end: string | null;
+};
+
+const horario = (r: Registro) => {
+  const partes: string[] = [];
+  if (r.opening_time || r.closing_time) partes.push(`${r.opening_time ?? "—"} a ${r.closing_time ?? "—"}`);
+  if (r.rest_start || r.rest_end) partes.push(`descanso ${r.rest_start ?? "—"}-${r.rest_end ?? "—"}`);
+  return partes.length ? partes.join(" · ") : "-";
 };
 
 function LibroPiscina() {
@@ -100,7 +111,7 @@ function LibroPiscina() {
       const { data } = await supabase
         .from("pool_records")
         .select(
-          "id, pool_id, vessel, record_date, record_time, technician_name, control_type, ph, free_chlorine, bromine_total, turbidity, vessel_status",
+          "id, pool_id, vessel, record_date, record_time, technician_name, control_type, ph, free_chlorine, bromine_total, turbidity, vessel_status, opening_time, closing_time, rest_start, rest_end",
         )
         .eq("pool_id", poolId)
         .order("record_date", { ascending: false })
