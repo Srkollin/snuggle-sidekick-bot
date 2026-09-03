@@ -46,7 +46,13 @@ type Pool = {
   has_doorman: boolean;
   doormen_count: number;
   other_staff: OtroEmpleado[];
+  client_id: string | null;
+  opening_date: string | null;
+  closing_date: string | null;
+  open_all_year: boolean;
+  assigned_employees: string[];
 };
+
 
 function PiscinasPage() {
   const { user } = Route.useRouteContext();
