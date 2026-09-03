@@ -452,6 +452,7 @@ export type Database = {
           attention_status: string
           bathers_count: number | null
           bromine_total: number | null
+          closing_time: string | null
           combined_chlorine: number | null
           company_id: string
           control_type: string
@@ -468,6 +469,7 @@ export type Database = {
           isocyanuric_acid: number | null
           lab_certificate_path: string | null
           legionella: number | null
+          opening_time: string | null
           ph: number
           pool_id: string
           pseudomonas: string | null
@@ -476,6 +478,8 @@ export type Database = {
           record_time: string
           redox: number | null
           reopening_time: string | null
+          rest_end: string | null
+          rest_start: string | null
           signed_at: string | null
           signed_by: string | null
           technician_name: string | null
@@ -498,6 +502,7 @@ export type Database = {
           attention_status?: string
           bathers_count?: number | null
           bromine_total?: number | null
+          closing_time?: string | null
           combined_chlorine?: number | null
           company_id: string
           control_type?: string
@@ -514,6 +519,7 @@ export type Database = {
           isocyanuric_acid?: number | null
           lab_certificate_path?: string | null
           legionella?: number | null
+          opening_time?: string | null
           ph: number
           pool_id: string
           pseudomonas?: string | null
@@ -522,6 +528,8 @@ export type Database = {
           record_time: string
           redox?: number | null
           reopening_time?: string | null
+          rest_end?: string | null
+          rest_start?: string | null
           signed_at?: string | null
           signed_by?: string | null
           technician_name?: string | null
@@ -544,6 +552,7 @@ export type Database = {
           attention_status?: string
           bathers_count?: number | null
           bromine_total?: number | null
+          closing_time?: string | null
           combined_chlorine?: number | null
           company_id?: string
           control_type?: string
@@ -560,6 +569,7 @@ export type Database = {
           isocyanuric_acid?: number | null
           lab_certificate_path?: string | null
           legionella?: number | null
+          opening_time?: string | null
           ph?: number
           pool_id?: string
           pseudomonas?: string | null
@@ -568,6 +578,8 @@ export type Database = {
           record_time?: string
           redox?: number | null
           reopening_time?: string | null
+          rest_end?: string | null
+          rest_start?: string | null
           signed_at?: string | null
           signed_by?: string | null
           technician_name?: string | null

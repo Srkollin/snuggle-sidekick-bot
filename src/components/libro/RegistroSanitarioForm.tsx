@@ -86,6 +86,10 @@ export function RegistroSanitarioForm({
     bathers_count: "",
     water_meter: "",
     recirculation_hours: "",
+    opening_time: "",
+    closing_time: "",
+    rest_start: "",
+    rest_end: "",
     has_incident: false,
     incident_description: "",
     corrective_action: "",
@@ -169,6 +173,10 @@ export function RegistroSanitarioForm({
         bathers_count: num(f.bathers_count),
         water_meter: num(f.water_meter),
         recirculation_hours: num(f.recirculation_hours),
+        opening_time: f.opening_time || null,
+        closing_time: f.closing_time || null,
+        rest_start: f.rest_start || null,
+        rest_end: f.rest_end || null,
         alerts: alertas,
         vessel_status: alertas.length > 0 ? "cerrado_por_incidencia" : "abierto",
         has_incident: f.has_incident,
@@ -348,6 +356,18 @@ export function RegistroSanitarioForm({
               value={f.recirculation_hours}
               onChange={(e) => set("recirculation_hours", e.target.value)}
             />
+          </Campo>
+          <Campo label="Hora de apertura del vaso">
+            <Input type="time" value={f.opening_time} onChange={(e) => set("opening_time", e.target.value)} />
+          </Campo>
+          <Campo label="Hora de cierre del vaso">
+            <Input type="time" value={f.closing_time} onChange={(e) => set("closing_time", e.target.value)} />
+          </Campo>
+          <Campo label="Descanso: inicio (si tiene)">
+            <Input type="time" value={f.rest_start} onChange={(e) => set("rest_start", e.target.value)} />
+          </Campo>
+          <Campo label="Descanso: fin (si tiene)">
+            <Input type="time" value={f.rest_end} onChange={(e) => set("rest_end", e.target.value)} />
           </Campo>
         </div>
       </Seccion>

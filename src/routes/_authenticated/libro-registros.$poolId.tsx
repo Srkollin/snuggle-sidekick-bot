@@ -50,6 +50,17 @@ type Registro = {
   bromine_total: number | null;
   turbidity: number;
   vessel_status: string;
+  opening_time: string | null;
+  closing_time: string | null;
+  rest_start: string | null;
+  rest_end: string | null;
+};
+
+const horario = (r: Registro) => {
+  const partes: string[] = [];
+  if (r.opening_time || r.closing_time) partes.push(`${r.opening_time ?? "—"} a ${r.closing_time ?? "—"}`);
+  if (r.rest_start || r.rest_end) partes.push(`descanso ${r.rest_start ?? "—"}-${r.rest_end ?? "—"}`);
+  return partes.length ? partes.join(" · ") : "-";
 };
 
 function LibroPiscina() {
@@ -100,7 +111,7 @@ function LibroPiscina() {
       const { data } = await supabase
         .from("pool_records")
         .select(
-          "id, pool_id, vessel, record_date, record_time, technician_name, control_type, ph, free_chlorine, bromine_total, turbidity, vessel_status",
+          "id, pool_id, vessel, record_date, record_time, technician_name, control_type, ph, free_chlorine, bromine_total, turbidity, vessel_status, opening_time, closing_time, rest_start, rest_end",
         )
         .eq("pool_id", poolId)
         .order("record_date", { ascending: false })
@@ -126,6 +137,7 @@ function LibroPiscina() {
           <td>${r.record_date}</td><td>${r.record_time}</td><td>${nombreVaso(r)}</td>
           <td>${r.technician_name ?? ""}</td><td>${r.control_type}</td>
           <td>${r.ph}</td><td>${r.free_chlorine ?? r.bromine_total ?? "-"}</td><td>${r.turbidity}</td>
+          <td>${horario(r)}</td>
           <td>${r.vessel_status === "abierto" ? "Abierto" : "Cerrado por incidencia"}</td>
         </tr>`,
       )
@@ -140,7 +152,7 @@ function LibroPiscina() {
       <h1>Libro sanitario · ${pool?.name ?? ""}</h1>
       <p>${empresaNombre} · Documento generado el ${new Date().toLocaleDateString("es-ES")}</p>
       <table><thead><tr><th>Fecha</th><th>Hora</th><th>Vaso</th><th>Técnico</th><th>Control</th>
-      <th>pH</th><th>Desinfectante mg/L</th><th>Turbidez UNF</th><th>Estado</th></tr></thead>
+      <th>pH</th><th>Desinfectante mg/L</th><th>Turbidez UNF</th><th>Apertura-Cierre</th><th>Estado</th></tr></thead>
       <tbody>${filas}</tbody></table></body></html>`);
     win.document.close();
     win.focus();
@@ -241,7 +253,7 @@ function LibroPiscina() {
           <table className="w-full min-w-[720px] text-sm">
             <thead className="border-b border-border bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                {["Fecha", "Hora", "Vaso", "Técnico", "pH", "Cloro/Bromo", "Turbidez", "Estado"].map((h) => (
+                {["Fecha", "Hora", "Vaso", "Técnico", "pH", "Cloro/Bromo", "Turbidez", "Apertura-Cierre", "Estado"].map((h) => (
                   <th key={h} className="px-4 py-3 font-semibold">
                     {h}
                   </th>
@@ -258,6 +270,7 @@ function LibroPiscina() {
                   <td className="px-4 py-3">{r.ph}</td>
                   <td className="px-4 py-3">{r.free_chlorine ?? r.bromine_total ?? "-"}</td>
                   <td className="px-4 py-3">{r.turbidity}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{horario(r)}</td>
                   <td className="px-4 py-3">
                     <span
                       className={cn(
