@@ -62,6 +62,7 @@ function PiscinasPage() {
   const { data: empresaData, isLoading: loadingEmpresa } = useEmpresa();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
   const [selected, setSelected] = useState<Pool | null>(null);
 
   const companyId = empresaData?.empresa?.id;
