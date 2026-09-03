@@ -139,7 +139,10 @@ function LoginCard() {
             setLoading(true);
             const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
             setLoading(false);
-            if (error) return toast.error("Email o contraseña incorrectos.");
+            if (error) {
+              toast.error("Email o contraseña incorrectos.");
+              return;
+            }
             navigate({ to: "/panel" });
           }}
         >

@@ -98,10 +98,18 @@ export function RegistroWizard({ mode = "full", onComplete }: Props) {
   }
 
   async function handleSubmit() {
-    if (!confirmAuthorized) return toast.error("Debes confirmar que estás autorizado.");
-    if (!acceptTerms) return toast.error("Debes aceptar los términos y condiciones.");
-    if (!acceptPrivacy) return toast.error("Debes aceptar la política de privacidad.");
-
+    if (!confirmAuthorized) {
+      toast.error("Debes confirmar que estás autorizado.");
+      return;
+    }
+    if (!acceptTerms) {
+      toast.error("Debes aceptar los términos y condiciones.");
+      return;
+    }
+    if (!acceptPrivacy) {
+      toast.error("Debes aceptar la política de privacidad.");
+      return;
+    }
     setSaving(true);
     try {
       let userId: string | undefined;
@@ -224,7 +232,10 @@ export function RegistroWizard({ mode = "full", onComplete }: Props) {
             className="mt-2"
             onClick={() => {
               const err = validateStep1();
-              if (err) return toast.error(err);
+              if (err) {
+                toast.error(err);
+                return;
+              }
               setStep(2);
             }}
           >
@@ -308,7 +319,10 @@ export function RegistroWizard({ mode = "full", onComplete }: Props) {
             <Button
               onClick={() => {
                 const err = validateStep2();
-                if (err) return toast.error(err);
+                if (err) {
+                  toast.error(err);
+                  return;
+                }
                 setStep(3);
               }}
             >

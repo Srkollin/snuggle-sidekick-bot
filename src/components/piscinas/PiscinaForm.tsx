@@ -53,7 +53,10 @@ export function PiscinaForm({
   }
 
   async function submit() {
-    if (!name.trim()) return toast.error("Indica el nombre de la piscina.");
+    if (!name.trim()) {
+      toast.error("Indica el nombre de la piscina.");
+      return;
+    }
     setSaving(true);
     try {
       let photoPath: string | null = null;
