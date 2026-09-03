@@ -105,3 +105,62 @@ export const JERARQUIA = [
     roles: ["Coordinador de personal", "Socorrista", "ATS / personal sanitario", "Portero / controlador de acceso"],
   },
 ];
+
+/** Cargos que un administrador puede asignar a un empleado invitado. */
+export const CARGOS_EMPLEADO = [
+  "Administrador",
+  "Encargado / Supervisor",
+  "Técnico de mantenimiento",
+  "Socorrista",
+  "ATS (Asistencia Técnico-Sanitaria)",
+  "Portero / Conserje",
+  "Limpieza",
+  "Jardinería",
+] as const;
+
+export const USOS_ENLACE = [
+  { label: "1 uso", value: "1" },
+  { label: "5 usos", value: "5" },
+  { label: "10 usos", value: "10" },
+  { label: "Ilimitado", value: "ilimitado" },
+] as const;
+
+export const CADUCIDAD_ENLACE = [
+  { label: "24 horas", value: "24" },
+  { label: "48 horas", value: "48" },
+  { label: "7 días", value: "168" },
+  { label: "30 días", value: "720" },
+] as const;
+
+export const ESTADOS_EMPLEADO: Record<string, string> = {
+  en_turno: "En turno",
+  fuera_de_turno: "Fuera de turno",
+  baja: "De baja",
+  despedido: "Despedido",
+};
+
+export const ESTADO_CIVIL = ["Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a", "Otro"] as const;
+
+export const NIVEL_ESTUDIOS = [
+  "Sin estudios",
+  "Primaria",
+  "ESO",
+  "Bachillerato",
+  "FP",
+  "Universitario",
+] as const;
+
+export const TIPOS_CLIENTE = [
+  "Particular",
+  "Comunidad de propietarios",
+  "Administrador de fincas",
+  "Empresa / Negocio",
+  "Ayuntamiento / Entidad pública",
+] as const;
+
+export const METODOS_PAGO = [
+  "Transferencia",
+  "Domiciliación bancaria",
+  "Efectivo",
+  "Otro",
+] as const;
