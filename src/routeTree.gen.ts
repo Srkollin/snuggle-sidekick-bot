@@ -16,6 +16,7 @@ import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedEmpleadosRouteImport } from './routes/_authenticated/empleados'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as AuthenticatedPiscinasRouteImport } from './routes/_authenticated/piscinas'
+import { Route as RegistroTokenRouteImport } from './routes/registro.$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -51,6 +52,11 @@ const AuthenticatedPiscinasRoute = AuthenticatedPiscinasRouteImport.update({
   path: '/piscinas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const RegistroTokenRoute = RegistroTokenRouteImport.update({
+  id: '/registro/$token',
+  path: '/registro/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/empleados': typeof AuthenticatedEmpleadosRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/piscinas': typeof AuthenticatedPiscinasRoute
+  '/registro/$token': typeof RegistroTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/empleados': typeof AuthenticatedEmpleadosRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/piscinas': typeof AuthenticatedPiscinasRoute
+  '/registro/$token': typeof RegistroTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,12 +85,27 @@ export interface FileRoutesById {
   '/_authenticated/empleados': typeof AuthenticatedEmpleadosRoute
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/_authenticated/piscinas': typeof AuthenticatedPiscinasRoute
+  '/registro/$token': typeof RegistroTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/clientes' | '/empleados' | '/panel' | '/piscinas'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/clientes'
+    | '/empleados'
+    | '/panel'
+    | '/piscinas'
+    | '/registro/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/clientes' | '/empleados' | '/panel' | '/piscinas'
+  to:
+    | '/'
+    | '/auth'
+    | '/clientes'
+    | '/empleados'
+    | '/panel'
+    | '/piscinas'
+    | '/registro/$token'
   id:
     | '__root__'
     | '/'
@@ -92,12 +115,14 @@ export interface FileRouteTypes {
     | '/_authenticated/empleados'
     | '/_authenticated/panel'
     | '/_authenticated/piscinas'
+    | '/registro/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  RegistroTokenRoute: typeof RegistroTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -151,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPiscinasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/registro/$token': {
+      id: '/registro/$token'
+      path: '/registro/$token'
+      fullPath: '/registro/$token'
+      preLoaderRoute: typeof RegistroTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -175,6 +207,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  RegistroTokenRoute: RegistroTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
