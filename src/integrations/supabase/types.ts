@@ -14,6 +14,116 @@ export type Database = {
   }
   public: {
     Tables: {
+      clients: {
+        Row: {
+          account_holder: string | null
+          address: string | null
+          billing_address: string | null
+          billing_city: string | null
+          billing_postal_code: string | null
+          billing_province: string | null
+          billing_same: boolean
+          city: string | null
+          client_type: string
+          collegiate_number: string | null
+          company_id: string
+          contact_person: string | null
+          contact_role: string | null
+          created_at: string
+          created_by: string
+          email: string | null
+          iban: string | null
+          id: string
+          is_draft: boolean
+          logo_path: string | null
+          managed_communities: Json
+          name: string
+          notes: string | null
+          payment_method: string | null
+          phone: string | null
+          phone_secondary: string | null
+          postal_code: string | null
+          province: string | null
+          requires_invoice: boolean
+          tax_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_holder?: string | null
+          address?: string | null
+          billing_address?: string | null
+          billing_city?: string | null
+          billing_postal_code?: string | null
+          billing_province?: string | null
+          billing_same?: boolean
+          city?: string | null
+          client_type: string
+          collegiate_number?: string | null
+          company_id: string
+          contact_person?: string | null
+          contact_role?: string | null
+          created_at?: string
+          created_by: string
+          email?: string | null
+          iban?: string | null
+          id?: string
+          is_draft?: boolean
+          logo_path?: string | null
+          managed_communities?: Json
+          name: string
+          notes?: string | null
+          payment_method?: string | null
+          phone?: string | null
+          phone_secondary?: string | null
+          postal_code?: string | null
+          province?: string | null
+          requires_invoice?: boolean
+          tax_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_holder?: string | null
+          address?: string | null
+          billing_address?: string | null
+          billing_city?: string | null
+          billing_postal_code?: string | null
+          billing_province?: string | null
+          billing_same?: boolean
+          city?: string | null
+          client_type?: string
+          collegiate_number?: string | null
+          company_id?: string
+          contact_person?: string | null
+          contact_role?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string | null
+          iban?: string | null
+          id?: string
+          is_draft?: boolean
+          logo_path?: string | null
+          managed_communities?: Json
+          name?: string
+          notes?: string | null
+          payment_method?: string | null
+          phone?: string | null
+          phone_secondary?: string | null
+          postal_code?: string | null
+          province?: string | null
+          requires_invoice?: boolean
+          tax_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           address: string | null
@@ -83,9 +193,211 @@ export type Database = {
         }
         Relationships: []
       }
+      employee_invites: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          roles: Json
+          roles_other: string | null
+          token: string
+          updated_at: string
+          used_count: number
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by: string
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          roles?: Json
+          roles_other?: string | null
+          token: string
+          updated_at?: string
+          used_count?: number
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          roles?: Json
+          roles_other?: string | null
+          token?: string
+          updated_at?: string
+          used_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_invites_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employees: {
+        Row: {
+          account_holder: string | null
+          address: string | null
+          approval_status: string
+          ats_cert_path: string | null
+          ats_expires_at: string | null
+          ats_issued_at: string | null
+          birth_date: string | null
+          birth_place: string | null
+          birth_province: string | null
+          city: string | null
+          company_id: string
+          created_at: string
+          education_level: string | null
+          email: string | null
+          father_name: string | null
+          first_job_in_spain: boolean | null
+          full_name: string
+          has_ssn: boolean
+          iban: string | null
+          id: string
+          id_back_path: string | null
+          id_front_path: string | null
+          invite_id: string | null
+          lifeguard_cert_path: string | null
+          lifeguard_expires_at: string | null
+          lifeguard_issued_at: string | null
+          marital_status: string | null
+          mother_name: string | null
+          national_id: string | null
+          nationality: string | null
+          pending_ssn: boolean
+          phone: string | null
+          photo_path: string | null
+          postal_code: string | null
+          roles: Json
+          roles_other: string | null
+          ssn: string | null
+          technician_cert_path: string | null
+          updated_at: string
+          work_permit_path: string | null
+          work_status: string
+        }
+        Insert: {
+          account_holder?: string | null
+          address?: string | null
+          approval_status?: string
+          ats_cert_path?: string | null
+          ats_expires_at?: string | null
+          ats_issued_at?: string | null
+          birth_date?: string | null
+          birth_place?: string | null
+          birth_province?: string | null
+          city?: string | null
+          company_id: string
+          created_at?: string
+          education_level?: string | null
+          email?: string | null
+          father_name?: string | null
+          first_job_in_spain?: boolean | null
+          full_name: string
+          has_ssn?: boolean
+          iban?: string | null
+          id?: string
+          id_back_path?: string | null
+          id_front_path?: string | null
+          invite_id?: string | null
+          lifeguard_cert_path?: string | null
+          lifeguard_expires_at?: string | null
+          lifeguard_issued_at?: string | null
+          marital_status?: string | null
+          mother_name?: string | null
+          national_id?: string | null
+          nationality?: string | null
+          pending_ssn?: boolean
+          phone?: string | null
+          photo_path?: string | null
+          postal_code?: string | null
+          roles?: Json
+          roles_other?: string | null
+          ssn?: string | null
+          technician_cert_path?: string | null
+          updated_at?: string
+          work_permit_path?: string | null
+          work_status?: string
+        }
+        Update: {
+          account_holder?: string | null
+          address?: string | null
+          approval_status?: string
+          ats_cert_path?: string | null
+          ats_expires_at?: string | null
+          ats_issued_at?: string | null
+          birth_date?: string | null
+          birth_place?: string | null
+          birth_province?: string | null
+          city?: string | null
+          company_id?: string
+          created_at?: string
+          education_level?: string | null
+          email?: string | null
+          father_name?: string | null
+          first_job_in_spain?: boolean | null
+          full_name?: string
+          has_ssn?: boolean
+          iban?: string | null
+          id?: string
+          id_back_path?: string | null
+          id_front_path?: string | null
+          invite_id?: string | null
+          lifeguard_cert_path?: string | null
+          lifeguard_expires_at?: string | null
+          lifeguard_issued_at?: string | null
+          marital_status?: string | null
+          mother_name?: string | null
+          national_id?: string | null
+          nationality?: string | null
+          pending_ssn?: boolean
+          phone?: string | null
+          photo_path?: string | null
+          postal_code?: string | null
+          roles?: Json
+          roles_other?: string | null
+          ssn?: string | null
+          technician_cert_path?: string | null
+          updated_at?: string
+          work_permit_path?: string | null
+          work_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employees_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employees_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "employee_invites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pools: {
         Row: {
           address: string | null
+          client_id: string | null
+          closing_date: string | null
           company_id: string
           created_at: string
           created_by: string
@@ -101,6 +413,8 @@ export type Database = {
           kids_name: string | null
           lifeguards_count: number
           name: string
+          open_all_year: boolean
+          opening_date: string | null
           other_staff: Json
           photo_path: string | null
           status: string
@@ -108,6 +422,8 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          client_id?: string | null
+          closing_date?: string | null
           company_id: string
           created_at?: string
           created_by: string
@@ -123,6 +439,8 @@ export type Database = {
           kids_name?: string | null
           lifeguards_count?: number
           name: string
+          open_all_year?: boolean
+          opening_date?: string | null
           other_staff?: Json
           photo_path?: string | null
           status?: string
@@ -130,6 +448,8 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          client_id?: string | null
+          closing_date?: string | null
           company_id?: string
           created_at?: string
           created_by?: string
@@ -145,12 +465,21 @@ export type Database = {
           kids_name?: string | null
           lifeguards_count?: number
           name?: string
+          open_all_year?: boolean
+          opening_date?: string | null
           other_staff?: Json
           photo_path?: string | null
           status?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "pools_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pools_company_id_fkey"
             columns: ["company_id"]

@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ImagePlus, Loader2, Plus, Trash2 } from "lucide-react";
 
+import { ClienteForm } from "@/components/clientes/ClienteForm";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -32,6 +35,30 @@ export function PiscinaForm({
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState<string>("Abierta");
+  const [clientId, setClientId] = useState<string>("");
+  const [clientSearch, setClientSearch] = useState("");
+  const [newClientOpen, setNewClientOpen] = useState(false);
+  const [openingDate, setOpeningDate] = useState("");
+  const [closingDate, setClosingDate] = useState("");
+  const [openAllYear, setOpenAllYear] = useState("no");
+
+  const queryClient = useQueryClient();
+  const { data: clients } = useQuery({
+    queryKey: ["clients", companyId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("clients")
+        .select("id, name, client_type")
+        .eq("company_id", companyId)
+        .order("name");
+      if (error) throw error;
+      return (data ?? []) as unknown as { id: string; name: string; client_type: string }[];
+    },
+  });
+
+  const filteredClients = (clients ?? []).filter((c) =>
+    c.name.toLowerCase().includes(clientSearch.trim().toLowerCase()),
+  );
   const [dosing, setDosing] = useState("Cloro");
   const [dosingOther, setDosingOther] = useState("");
 
@@ -90,7 +117,11 @@ export function PiscinaForm({
         doormen_count: hasDoorman === "si" ? doormen : 0,
         other_staff:
           hasOthers === "si" ? others.filter((o) => o.tipo.trim()).map((o) => ({ ...o, tipo: o.tipo.trim() })) : [],
-      });
+        client_id: clientId || null,
+        open_all_year: openAllYear === "si",
+        opening_date: openAllYear === "si" ? null : openingDate || null,
+        closing_date: openAllYear === "si" ? null : closingDate || null,
+      } as never);
       if (error) throw error;
       toast.success("Piscina registrada.");
       onSaved();
@@ -144,6 +175,69 @@ export function PiscinaForm({
           </Select>
         </Field>
       </Section>
+
+      <Section title="Cliente">
+        <Field label="Buscar cliente">
+          <Input
+            value={clientSearch}
+            onChange={(e) => setClientSearch(e.target.value)}
+            placeholder="Escribe para filtrar"
+          />
+        </Field>
+        <Field label="Cliente asociado">
+          <Select value={clientId} onValueChange={setClientId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Sin cliente asociado" />
+            </SelectTrigger>
+            <SelectContent>
+              {filteredClients.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name} · {c.client_type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="justify-self-start"
+          onClick={() => setNewClientOpen(true)}
+        >
+          <Plus className="mr-1 size-4" /> Crear cliente nuevo
+        </Button>
+      </Section>
+
+      <Section title="Temporada">
+        <YesNo label="¿Está abierta todo el año?" value={openAllYear} onChange={setOpenAllYear} />
+        {openAllYear === "no" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Fecha de apertura">
+              <Input type="date" value={openingDate} onChange={(e) => setOpeningDate(e.target.value)} />
+            </Field>
+            <Field label="Fecha de cierre">
+              <Input type="date" value={closingDate} onChange={(e) => setClosingDate(e.target.value)} />
+            </Field>
+          </div>
+        )}
+      </Section>
+
+      <Dialog open={newClientOpen} onOpenChange={setNewClientOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-display">Nuevo cliente</DialogTitle>
+          </DialogHeader>
+          <ClienteForm
+            companyId={companyId}
+            userId={userId}
+            onSaved={() => {
+              setNewClientOpen(false);
+              queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
+            }}
+          />
+        </DialogContent>
+      </Dialog>
 
       <Section title="Tratamiento principal">
         <Field label="Tipo de dosificación">

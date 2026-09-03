@@ -12,8 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
+import { Route as AuthenticatedConfiguracionRouteImport } from './routes/_authenticated/configuracion'
+import { Route as AuthenticatedEmpleadosRouteImport } from './routes/_authenticated/empleados'
+import { Route as AuthenticatedFacturacionRouteImport } from './routes/_authenticated/facturacion'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as AuthenticatedPiscinasRouteImport } from './routes/_authenticated/piscinas'
+import { Route as AuthenticatedRutasRouteImport } from './routes/_authenticated/rutas'
+import { Route as RegistroTokenRouteImport } from './routes/registro.$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,6 +35,28 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedClientesRoute = AuthenticatedClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedConfiguracionRoute =
+  AuthenticatedConfiguracionRouteImport.update({
+    id: '/configuracion',
+    path: '/configuracion',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedEmpleadosRoute = AuthenticatedEmpleadosRouteImport.update({
+  id: '/empleados',
+  path: '/empleados',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFacturacionRoute =
+  AuthenticatedFacturacionRouteImport.update({
+    id: '/facturacion',
+    path: '/facturacion',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
   id: '/panel',
   path: '/panel',
@@ -39,45 +67,100 @@ const AuthenticatedPiscinasRoute = AuthenticatedPiscinasRouteImport.update({
   path: '/piscinas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRutasRoute = AuthenticatedRutasRouteImport.update({
+  id: '/rutas',
+  path: '/rutas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const RegistroTokenRoute = RegistroTokenRouteImport.update({
+  id: '/registro/$token',
+  path: '/registro/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/clientes': typeof AuthenticatedClientesRoute
+  '/configuracion': typeof AuthenticatedConfiguracionRoute
+  '/empleados': typeof AuthenticatedEmpleadosRoute
+  '/facturacion': typeof AuthenticatedFacturacionRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/piscinas': typeof AuthenticatedPiscinasRoute
+  '/rutas': typeof AuthenticatedRutasRoute
+  '/registro/$token': typeof RegistroTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/clientes': typeof AuthenticatedClientesRoute
+  '/configuracion': typeof AuthenticatedConfiguracionRoute
+  '/empleados': typeof AuthenticatedEmpleadosRoute
+  '/facturacion': typeof AuthenticatedFacturacionRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/piscinas': typeof AuthenticatedPiscinasRoute
+  '/rutas': typeof AuthenticatedRutasRoute
+  '/registro/$token': typeof RegistroTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/clientes': typeof AuthenticatedClientesRoute
+  '/_authenticated/configuracion': typeof AuthenticatedConfiguracionRoute
+  '/_authenticated/empleados': typeof AuthenticatedEmpleadosRoute
+  '/_authenticated/facturacion': typeof AuthenticatedFacturacionRoute
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/_authenticated/piscinas': typeof AuthenticatedPiscinasRoute
+  '/_authenticated/rutas': typeof AuthenticatedRutasRoute
+  '/registro/$token': typeof RegistroTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/panel' | '/piscinas'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/clientes'
+    | '/configuracion'
+    | '/empleados'
+    | '/facturacion'
+    | '/panel'
+    | '/piscinas'
+    | '/rutas'
+    | '/registro/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/panel' | '/piscinas'
+  to:
+    | '/'
+    | '/auth'
+    | '/clientes'
+    | '/configuracion'
+    | '/empleados'
+    | '/facturacion'
+    | '/panel'
+    | '/piscinas'
+    | '/rutas'
+    | '/registro/$token'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/clientes'
+    | '/_authenticated/configuracion'
+    | '/_authenticated/empleados'
+    | '/_authenticated/facturacion'
     | '/_authenticated/panel'
     | '/_authenticated/piscinas'
+    | '/_authenticated/rutas'
+    | '/registro/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  RegistroTokenRoute: typeof RegistroTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -103,6 +186,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/clientes': {
+      id: '/_authenticated/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof AuthenticatedClientesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/configuracion': {
+      id: '/_authenticated/configuracion'
+      path: '/configuracion'
+      fullPath: '/configuracion'
+      preLoaderRoute: typeof AuthenticatedConfiguracionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/empleados': {
+      id: '/_authenticated/empleados'
+      path: '/empleados'
+      fullPath: '/empleados'
+      preLoaderRoute: typeof AuthenticatedEmpleadosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/facturacion': {
+      id: '/_authenticated/facturacion'
+      path: '/facturacion'
+      fullPath: '/facturacion'
+      preLoaderRoute: typeof AuthenticatedFacturacionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/panel': {
       id: '/_authenticated/panel'
       path: '/panel'
@@ -117,17 +228,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPiscinasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/rutas': {
+      id: '/_authenticated/rutas'
+      path: '/rutas'
+      fullPath: '/rutas'
+      preLoaderRoute: typeof AuthenticatedRutasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/registro/$token': {
+      id: '/registro/$token'
+      path: '/registro/$token'
+      fullPath: '/registro/$token'
+      preLoaderRoute: typeof RegistroTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
+  AuthenticatedConfiguracionRoute: typeof AuthenticatedConfiguracionRoute
+  AuthenticatedEmpleadosRoute: typeof AuthenticatedEmpleadosRoute
+  AuthenticatedFacturacionRoute: typeof AuthenticatedFacturacionRoute
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
   AuthenticatedPiscinasRoute: typeof AuthenticatedPiscinasRoute
+  AuthenticatedRutasRoute: typeof AuthenticatedRutasRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedClientesRoute: AuthenticatedClientesRoute,
+  AuthenticatedConfiguracionRoute: AuthenticatedConfiguracionRoute,
+  AuthenticatedEmpleadosRoute: AuthenticatedEmpleadosRoute,
+  AuthenticatedFacturacionRoute: AuthenticatedFacturacionRoute,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
   AuthenticatedPiscinasRoute: AuthenticatedPiscinasRoute,
+  AuthenticatedRutasRoute: AuthenticatedRutasRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -137,6 +272,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  RegistroTokenRoute: RegistroTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

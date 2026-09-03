@@ -105,3 +105,77 @@ export const JERARQUIA = [
     roles: ["Coordinador de personal", "Socorrista", "ATS / personal sanitario", "Portero / controlador de acceso"],
   },
 ];
+
+/** Cargos que un administrador puede asignar a un empleado invitado. */
+export const CARGOS_EMPLEADO = [
+  "Administrador",
+  "Encargado / Supervisor",
+  "Técnico de mantenimiento",
+  "Socorrista",
+  "ATS (Asistencia Técnico-Sanitaria)",
+  "Portero / Conserje",
+  "Limpieza",
+  "Jardinería",
+] as const;
+
+export const USOS_ENLACE = [
+  { label: "1 uso", value: "1" },
+  { label: "5 usos", value: "5" },
+  { label: "10 usos", value: "10" },
+  { label: "Ilimitado", value: "ilimitado" },
+] as const;
+
+export const CADUCIDAD_ENLACE = [
+  { label: "24 horas", value: "24" },
+  { label: "48 horas", value: "48" },
+  { label: "7 días", value: "168" },
+  { label: "30 días", value: "720" },
+] as const;
+
+export const TIPOS_CLIENTE = [
+  "Particular",
+  "Comunidad de vecinos",
+  "Administrador de fincas",
+  "Hotel o complejo turístico",
+  "Instalación deportiva",
+  "Empresa u organismo",
+] as const;
+
+export const METODOS_PAGO = [
+  "Transferencia bancaria",
+  "Domiciliación bancaria",
+  "Efectivo",
+  "Tarjeta",
+] as const;
+
+/** Todos los roles asignables a un empleado (derivados de la jerarquía). */
+export const ROLES_EMPLEADO = JERARQUIA.flatMap((a) => a.roles);
+
+export const ESTADOS_EMPLEADO = ["en_turno", "fuera_de_turno", "de_baja", "despedido"] as const;
+
+export const ESTADO_EMPLEADO_LABEL: Record<string, string> = {
+  en_turno: "En turno",
+  fuera_de_turno: "Fuera de turno",
+  de_baja: "De baja",
+  despedido: "Despedido",
+};
+
+export const ESTADO_CIVIL = ["Soltero/a", "Casado/a", "Pareja de hecho", "Divorciado/a", "Viudo/a"] as const;
+
+export const NIVEL_ESTUDIOS = [
+  "Sin estudios",
+  "Educación primaria",
+  "ESO",
+  "Bachillerato",
+  "Formación profesional",
+  "Universidad",
+] as const;
+
+/** Titulación obligatoria según el rol asignado. */
+export const TITULACION_POR_ROL: Record<string, "socorrista" | "ats" | "tecnico"> = {
+  Socorrista: "socorrista",
+  "ATS / personal sanitario": "ats",
+  "Técnico de mantenimiento": "tecnico",
+  "Técnico de reparación": "tecnico",
+  Instalador: "tecnico",
+};
