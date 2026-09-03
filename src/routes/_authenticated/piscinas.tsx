@@ -149,6 +149,17 @@ function PiscinasPage() {
         </Dialog>
       </div>
 
+      <div className="relative mb-6 max-w-md">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar por nombre, dirección o estado…"
+          className="pl-9"
+          aria-label="Buscar piscinas"
+        />
+      </div>
+
       {isLoading || loadingEmpresa ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[0, 1, 2].map((i) => (
@@ -161,9 +172,15 @@ function PiscinasPage() {
             Todavía no hay piscinas registradas.
           </CardContent>
         </Card>
+      ) : !piscinasFiltradas.length ? (
+        <Card>
+          <CardContent className="p-10 text-center text-sm text-muted-foreground">
+            No hay piscinas que coincidan con «{busqueda}».
+          </CardContent>
+        </Card>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {pools.map((pool) => (
+          {piscinasFiltradas.map((pool) => (
             <button
               key={pool.id}
               type="button"
