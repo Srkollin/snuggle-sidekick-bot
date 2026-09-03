@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useEmpresa } from "@/hooks/useEmpresa";
 import { cn } from "@/lib/utils";
@@ -98,9 +99,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col pb-16 md:pb-0">
-        <header className="sticky top-0 z-30 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">Panel de administración</p>
-          <h1 className="font-display text-lg font-bold">{empresaNombre}</h1>
+        <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary">Panel de administración</p>
+            <h1 className="font-display text-lg font-bold">{empresaNombre}</h1>
+          </div>
+          <ThemeToggle />
         </header>
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 md:px-8 md:py-8">{children}</main>
