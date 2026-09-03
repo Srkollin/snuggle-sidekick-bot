@@ -198,14 +198,141 @@ function PiscinasPage() {
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto p-0 sm:max-w-2xl">
-          {selected && <DetallePiscina pool={selected} />}
+          {selected && (
+            <DetallePiscina
+              pool={selected}
+              companyId={companyId!}
+              userId={user.id}
+              onUpdated={() => {
+                setSelected(null);
+                queryClient.invalidateQueries({ queryKey: ["pools", companyId] });
+              }}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </AppShell>
   );
 }
 
-function DetallePiscina({ pool }: { pool: Pool & { photoUrl?: string } }) {
+function DetallePiscina({
+  pool,
+  companyId,
+  userId,
+  onUpdated,
+}: {
+  pool: Pool & { photoUrl?: string };
+  companyId: string;
+  userId: string;
+  onUpdated: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data: cliente } = useQuery({
+    queryKey: ["pool-client", pool.client_id],
+    enabled: !!pool.client_id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("clients")
+        .select("id, name, client_type")
+        .eq("id", pool.client_id!)
+        .maybeSingle();
+      return data as { id: string; name: string; client_type: string } | null;
+    },
+  });
+
+  const { data: empleados } = useQuery({
+    queryKey: ["employees-min", companyId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("employees")
+        .select("id, full_name, roles")
+        .eq("company_id", companyId)
+        .order("full_name");
+      if (error) throw error;
+      return (data ?? []) as unknown as { id: string; full_name: string; roles: string[] }[];
+    },
+  });
+
+  const asignados = (empleados ?? []).filter((e) => (pool.assigned_employees ?? []).includes(e.id));
+
+  const { data: observaciones } = useQuery({
+    queryKey: ["pool-observations", pool.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("pool_observations")
+        .select("id, content, author_name, created_at")
+        .eq("pool_id", pool.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as unknown as {
+        id: string;
+        content: string;
+        author_name: string | null;
+        created_at: string;
+      }[];
+    },
+  });
+
+  const [nota, setNota] = useState("");
+  const [savingNota, setSavingNota] = useState(false);
+
+  async function addObservacion() {
+    if (!nota.trim()) {
+      toast.error("Escribe una observación.");
+      return;
+    }
+    setSavingNota(true);
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", userId)
+        .maybeSingle();
+      const { error } = await supabase.from("pool_observations").insert({
+        company_id: companyId,
+        pool_id: pool.id,
+        created_by: userId,
+        author_name: profile?.full_name ?? null,
+        content: nota.trim(),
+      } as never);
+      if (error) throw error;
+      setNota("");
+      queryClient.invalidateQueries({ queryKey: ["pool-observations", pool.id] });
+      toast.success("Observación añadida.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "No se ha podido guardar la observación.");
+    } finally {
+      setSavingNota(false);
+    }
+  }
+
+  async function borrarObservacion(id: string) {
+    const { error } = await supabase.from("pool_observations").delete().eq("id", id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ["pool-observations", pool.id] });
+  }
+
+  if (editing) {
+    return (
+      <div className="p-6">
+        <DialogHeader className="mb-4 text-left">
+          <DialogTitle className="font-display">Editar piscina</DialogTitle>
+        </DialogHeader>
+        <PiscinaForm
+          companyId={companyId}
+          userId={userId}
+          pool={{ ...pool, assigned_employees: pool.assigned_employees ?? [] }}
+          onSaved={onUpdated}
+        />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="relative h-52 w-full overflow-hidden bg-secondary">
@@ -237,6 +364,17 @@ function DetallePiscina({ pool }: { pool: Pool & { photoUrl?: string } }) {
       </div>
 
       <div className="space-y-6 p-6">
+        <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+          <Pencil className="mr-2 size-4" /> Editar piscina
+        </Button>
+
+        <Section title="Cliente">
+          <Row
+            label="Cliente asociado"
+            value={cliente ? `${cliente.name} · ${cliente.client_type}` : "Sin cliente asociado"}
+          />
+        </Section>
+
         <Section title="Tratamiento del agua">
           <Row
             label="Tipo de dosificación"
@@ -264,11 +402,52 @@ function DetallePiscina({ pool }: { pool: Pool & { photoUrl?: string } }) {
                 : "No"
             }
           />
+          <Row
+            label="Empleados asignados"
+            value={asignados.length ? asignados.map((e) => e.full_name).join(", ") : "Ninguno"}
+          />
         </Section>
+
+        <section>
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">Observaciones</h3>
+          <div className="grid gap-3 rounded-xl border border-border bg-muted/30 p-4">
+            <Textarea
+              value={nota}
+              onChange={(e) => setNota(e.target.value)}
+              placeholder="Añade una observación sobre esta piscina"
+              rows={3}
+            />
+            <Button size="sm" className="justify-self-start" onClick={addObservacion} disabled={savingNota}>
+              <Plus className="mr-1 size-4" /> Añadir observación
+            </Button>
+
+            {observaciones?.length ? (
+              <ul className="grid gap-2">
+                {observaciones.map((o) => (
+                  <li key={o.id} className="rounded-lg border border-border bg-card p-3 text-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="whitespace-pre-wrap">{o.content}</p>
+                      <Button variant="ghost" size="icon" onClick={() => borrarObservacion(o.id)}>
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {o.author_name ? `${o.author_name} · ` : ""}
+                      {new Date(o.created_at).toLocaleString("es-ES")}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">Todavía no hay observaciones.</p>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );
 }
+
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
