@@ -117,7 +117,11 @@ export function PiscinaForm({
         doormen_count: hasDoorman === "si" ? doormen : 0,
         other_staff:
           hasOthers === "si" ? others.filter((o) => o.tipo.trim()).map((o) => ({ ...o, tipo: o.tipo.trim() })) : [],
-      });
+        client_id: clientId || null,
+        open_all_year: openAllYear === "si",
+        opening_date: openAllYear === "si" ? null : openingDate || null,
+        closing_date: openAllYear === "si" ? null : closingDate || null,
+      } as never);
       if (error) throw error;
       toast.success("Piscina registrada.");
       onSaved();
