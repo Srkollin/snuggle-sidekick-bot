@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { MapPin, Pencil, Plus, Search, Trash2, Waves } from "lucide-react";
+import { MapPin, Pencil, Plus, Search, Trash2, UserCheck, Users, Waves } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
@@ -10,11 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useEmpresa } from "@/hooks/useEmpresa";
-import { ESTADO_CLASSES, type OtroEmpleado } from "@/lib/dehesapool";
+import { ESTADO_CLASSES, ESTADO_EMPLEADO_LABEL, type OtroEmpleado } from "@/lib/dehesapool";
 import { cn } from "@/lib/utils";
 
 
@@ -57,6 +58,16 @@ type Pool = {
   assigned_employees: string[];
 };
 
+type Empleado = { id: string; full_name: string; roles: string[]; work_status: string };
+
+function turnoClasses(status: string) {
+  return status === "en_turno"
+    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+    : status === "de_baja"
+      ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+      : "border-border bg-muted text-muted-foreground";
+}
+
 
 function PiscinasPage() {
   const { user } = Route.useRouteContext();
@@ -89,6 +100,22 @@ function PiscinasPage() {
       return list.map((p) => ({ ...p, photoUrl: p.photo_path ? urls.get(p.photo_path) : undefined }));
     },
   });
+
+  const { data: empleados } = useQuery({
+    queryKey: ["employees-min", companyId],
+    enabled: !!companyId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("employees")
+        .select("id, full_name, roles, work_status")
+        .eq("company_id", companyId!)
+        .order("full_name");
+      if (error) throw error;
+      return (data ?? []) as unknown as Empleado[];
+    },
+  });
+
+  const empleadosPorId = new Map((empleados ?? []).map((e) => [e.id, e]));
 
   const q = busqueda.trim().toLowerCase();
   const piscinasFiltradas = (pools ?? []).filter((p) =>
@@ -221,6 +248,40 @@ function PiscinasPage() {
                   {(pool.dosing_type === "Otros" ? pool.dosing_other : pool.dosing_type) || "Sin dosificación"} ·{" "}
                   {pool.has_kids_pool ? "Con piscina infantil" : "Sin piscina infantil"}
                 </p>
+                <div className="mt-2 border-t border-border/60 pt-2">
+                  <p className="mb-1 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                    <Users className="size-3" /> Empleados
+                  </p>
+                  {(pool.assigned_employees ?? []).length ? (
+                    <div className="flex flex-wrap gap-1">
+                      {(pool.assigned_employees ?? []).slice(0, 3).map((id) => {
+                        const e = empleadosPorId.get(id);
+                        if (!e) return null;
+                        return (
+                          <span
+                            key={id}
+                            className={cn(
+                              "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px]",
+                              turnoClasses(e.work_status),
+                            )}
+                          >
+                            {e.full_name}
+                            <span className="opacity-80">
+                              · {ESTADO_EMPLEADO_LABEL[e.work_status] ?? e.work_status}
+                            </span>
+                          </span>
+                        );
+                      })}
+                      {(pool.assigned_employees ?? []).length > 3 && (
+                        <span className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground">
+                          +{(pool.assigned_employees ?? []).length - 3}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">Sin empleados asignados</p>
+                  )}
+                </div>
               </div>
             </button>
           ))}
@@ -278,11 +339,11 @@ function DetallePiscina({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("employees")
-        .select("id, full_name, roles")
+        .select("id, full_name, roles, work_status")
         .eq("company_id", companyId)
         .order("full_name");
       if (error) throw error;
-      return (data ?? []) as unknown as { id: string; full_name: string; roles: string[] }[];
+      return (data ?? []) as unknown as Empleado[];
     },
   });
 
@@ -305,6 +366,20 @@ function DetallePiscina({
       }[];
     },
   });
+
+  async function cambiarTurno(e: Empleado) {
+    const next = e.work_status === "en_turno" ? "fuera_de_turno" : "en_turno";
+    const { error } = await supabase
+      .from("employees")
+      .update({ work_status: next } as never)
+      .eq("id", e.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ["employees-min", companyId] });
+    toast.success(`${e.full_name}: ${ESTADO_EMPLEADO_LABEL[next] ?? next}`);
+  }
 
   const [nota, setNota] = useState("");
   const [savingNota, setSavingNota] = useState(false);
@@ -433,11 +508,48 @@ function DetallePiscina({
                 : "No"
             }
           />
-          <Row
-            label="Empleados asignados"
-            value={asignados.length ? asignados.map((e) => e.full_name).join(", ") : "Ninguno"}
-          />
         </Section>
+
+        <section>
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">
+            Empleados asignados
+          </h3>
+          <div className="grid gap-2 rounded-xl border border-border bg-muted/30 p-4">
+            {asignados.length ? (
+              asignados.map((e) => (
+                <div
+                  key={e.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card p-3"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{e.full_name}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {e.roles?.length ? e.roles.join(", ") : "Sin categoría asignada"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className={cn("text-xs", turnoClasses(e.work_status))}>
+                      {ESTADO_EMPLEADO_LABEL[e.work_status] ?? e.work_status}
+                    </Badge>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => cambiarTurno(e)}
+                      disabled={e.work_status === "de_baja" || e.work_status === "despedido"}
+                    >
+                      <UserCheck className="mr-1 size-4" />
+                      {e.work_status === "en_turno" ? "Sacar de turno" : "Poner en turno"}
+                    </Button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Ninguno. Edita la piscina para asignar empleados; al asignarlos entran en turno.
+              </p>
+            )}
+          </div>
+        </section>
 
         <section>
           <h3 className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">Observaciones</h3>
