@@ -19,28 +19,54 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { DOSIFICACIONES, ESTADOS_PISCINA, type OtroEmpleado } from "@/lib/dehesapool";
 
+export type PiscinaEditable = {
+  id: string;
+  name: string;
+  address: string | null;
+  status: string;
+  dosing_type: string | null;
+  dosing_other: string | null;
+  has_kids_pool: boolean;
+  kids_name: string | null;
+  kids_dosing_type: string | null;
+  kids_dosing_other: string | null;
+  has_lifeguard: boolean;
+  lifeguards_count: number;
+  has_doorman: boolean;
+  doormen_count: number;
+  other_staff: OtroEmpleado[];
+  client_id?: string | null;
+  opening_date?: string | null;
+  closing_date?: string | null;
+  open_all_year?: boolean;
+  assigned_employees?: string[];
+};
+
 export function PiscinaForm({
   companyId,
   userId,
+  pool,
   onSaved,
 }: {
   companyId: string;
   userId: string;
+  pool?: PiscinaEditable;
   onSaved: () => void;
 }) {
+  const isEdit = !!pool;
   const [saving, setSaving] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [status, setStatus] = useState<string>("Abierta");
-  const [clientId, setClientId] = useState<string>("");
+  const [name, setName] = useState(pool?.name ?? "");
+  const [address, setAddress] = useState(pool?.address ?? "");
+  const [status, setStatus] = useState<string>(pool?.status ?? "Abierta");
+  const [clientId, setClientId] = useState<string>(pool?.client_id ?? "");
   const [clientSearch, setClientSearch] = useState("");
   const [newClientOpen, setNewClientOpen] = useState(false);
-  const [openingDate, setOpeningDate] = useState("");
-  const [closingDate, setClosingDate] = useState("");
-  const [openAllYear, setOpenAllYear] = useState("no");
+  const [openingDate, setOpeningDate] = useState(pool?.opening_date ?? "");
+  const [closingDate, setClosingDate] = useState(pool?.closing_date ?? "");
+  const [openAllYear, setOpenAllYear] = useState(pool?.open_all_year ? "si" : "no");
 
   const queryClient = useQueryClient();
   const { data: clients } = useQuery({
@@ -56,23 +82,41 @@ export function PiscinaForm({
     },
   });
 
+  const { data: empleados } = useQuery({
+    queryKey: ["employees-min", companyId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("employees")
+        .select("id, full_name, roles")
+        .eq("company_id", companyId)
+        .order("full_name");
+      if (error) throw error;
+      return (data ?? []) as unknown as { id: string; full_name: string; roles: string[] }[];
+    },
+  });
+
+  const [assigned, setAssigned] = useState<string[]>(pool?.assigned_employees ?? []);
+
   const filteredClients = (clients ?? []).filter((c) =>
     c.name.toLowerCase().includes(clientSearch.trim().toLowerCase()),
   );
-  const [dosing, setDosing] = useState("Cloro");
-  const [dosingOther, setDosingOther] = useState("");
+  const [dosing, setDosing] = useState(pool?.dosing_type ?? "Cloro");
+  const [dosingOther, setDosingOther] = useState(pool?.dosing_other ?? "");
 
-  const [hasKids, setHasKids] = useState("no");
-  const [kidsName, setKidsName] = useState("");
-  const [kidsDosing, setKidsDosing] = useState("Cloro");
-  const [kidsDosingOther, setKidsDosingOther] = useState("");
+  const [hasKids, setHasKids] = useState(pool?.has_kids_pool ? "si" : "no");
+  const [kidsName, setKidsName] = useState(pool?.kids_name ?? "");
+  const [kidsDosing, setKidsDosing] = useState(pool?.kids_dosing_type ?? "Cloro");
+  const [kidsDosingOther, setKidsDosingOther] = useState(pool?.kids_dosing_other ?? "");
 
-  const [hasLifeguard, setHasLifeguard] = useState("no");
-  const [lifeguards, setLifeguards] = useState(0);
-  const [hasDoorman, setHasDoorman] = useState("no");
-  const [doormen, setDoormen] = useState(0);
-  const [hasOthers, setHasOthers] = useState("no");
-  const [others, setOthers] = useState<OtroEmpleado[]>([{ tipo: "", cantidad: 0 }]);
+  const [hasLifeguard, setHasLifeguard] = useState(pool?.has_lifeguard ? "si" : "no");
+  const [lifeguards, setLifeguards] = useState(pool?.lifeguards_count ?? 0);
+  const [hasDoorman, setHasDoorman] = useState(pool?.has_doorman ? "si" : "no");
+  const [doormen, setDoormen] = useState(pool?.doormen_count ?? 0);
+  const [hasOthers, setHasOthers] = useState(pool?.other_staff?.length ? "si" : "no");
+  const [others, setOthers] = useState<OtroEmpleado[]>(
+    pool?.other_staff?.length ? pool.other_staff : [{ tipo: "", cantidad: 0 }],
+  );
+
 
   function pickFile(f: File | null) {
     setFile(f);
@@ -98,12 +142,9 @@ export function PiscinaForm({
         photoPath = path;
       }
 
-      const { error } = await supabase.from("pools").insert({
-        company_id: companyId,
-        created_by: userId,
+      const payload = {
         name: name.trim(),
         address: address.trim() || null,
-        photo_path: photoPath,
         status,
         dosing_type: dosing,
         dosing_other: dosing === "Otros" ? dosingOther.trim() || null : null,
@@ -118,13 +159,28 @@ export function PiscinaForm({
         other_staff:
           hasOthers === "si" ? others.filter((o) => o.tipo.trim()).map((o) => ({ ...o, tipo: o.tipo.trim() })) : [],
         client_id: clientId || null,
+        assigned_employees: assigned,
         open_all_year: openAllYear === "si",
         opening_date: openAllYear === "si" ? null : openingDate || null,
         closing_date: openAllYear === "si" ? null : closingDate || null,
-      } as never);
-      if (error) throw error;
-      toast.success("Piscina registrada.");
+      };
+
+      if (isEdit) {
+        const { error } = await supabase
+          .from("pools")
+          .update({ ...payload, ...(photoPath ? { photo_path: photoPath } : {}) } as never)
+          .eq("id", pool!.id);
+        if (error) throw error;
+        toast.success("Piscina actualizada.");
+      } else {
+        const { error } = await supabase
+          .from("pools")
+          .insert({ ...payload, company_id: companyId, created_by: userId, photo_path: photoPath } as never);
+        if (error) throw error;
+        toast.success("Piscina registrada.");
+      }
       onSaved();
+
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "No se ha podido registrar la piscina.");
     } finally {
@@ -360,10 +416,46 @@ export function PiscinaForm({
         )}
       </Section>
 
+      <Section title="Empleados asignados">
+        {!empleados?.length ? (
+          <p className="text-sm text-muted-foreground">
+            Todavía no hay empleados registrados en tu empresa.
+          </p>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">
+            {empleados.map((e) => {
+              const checked = assigned.includes(e.id);
+              return (
+                <label
+                  key={e.id}
+                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-sm"
+                >
+                  <input
+                    type="checkbox"
+                    className="size-4 accent-primary"
+                    checked={checked}
+                    onChange={() =>
+                      setAssigned(checked ? assigned.filter((id) => id !== e.id) : [...assigned, e.id])
+                    }
+                  />
+                  <span className="min-w-0 truncate">
+                    {e.full_name}
+                    {e.roles?.length ? (
+                      <span className="text-muted-foreground"> · {e.roles.join(", ")}</span>
+                    ) : null}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        )}
+      </Section>
+
       <Button onClick={submit} disabled={saving}>
         {saving && <Loader2 className="mr-2 size-4 animate-spin" />}
-        Registrar piscina
+        {isEdit ? "Guardar cambios" : "Registrar piscina"}
       </Button>
+
     </div>
   );
 }
