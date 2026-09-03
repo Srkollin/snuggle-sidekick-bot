@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { MapPin, Plus, Waves } from "lucide-react";
+import { MapPin, Pencil, Plus, Trash2, Waves } from "lucide-react";
+import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
 import { PiscinaForm } from "@/components/piscinas/PiscinaForm";
@@ -9,10 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useEmpresa } from "@/hooks/useEmpresa";
 import { ESTADO_CLASSES, type OtroEmpleado } from "@/lib/dehesapool";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/_authenticated/piscinas")({
   head: () => ({
