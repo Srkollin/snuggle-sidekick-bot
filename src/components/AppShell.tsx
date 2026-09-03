@@ -1,6 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  BellRing,
   BookOpen,
   Building2,
   LayoutDashboard,
@@ -21,6 +22,7 @@ const NAV = [
   { to: "/panel", label: "Dashboard", icon: LayoutDashboard },
   { to: "/piscinas", label: "Piscinas", icon: Waves },
   { to: "/libro-registros", label: "Libro de registros", icon: BookOpen },
+  { to: "/avisos", label: "Avisos", icon: BellRing },
   { to: "/empleados", label: "Empleados", icon: Users },
   { to: "/rutas", label: "Rutas", icon: RouteIcon },
   { to: "/clientes", label: "Clientes", icon: Building2 },
