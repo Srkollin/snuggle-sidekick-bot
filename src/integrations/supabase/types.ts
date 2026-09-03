@@ -393,6 +393,54 @@ export type Database = {
           },
         ]
       }
+      pool_observations: {
+        Row: {
+          author_name: string | null
+          company_id: string
+          content: string
+          created_at: string
+          created_by: string
+          id: string
+          pool_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string | null
+          company_id: string
+          content: string
+          created_at?: string
+          created_by: string
+          id?: string
+          pool_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string | null
+          company_id?: string
+          content?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          pool_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pool_observations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pool_observations_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "pools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pool_records: {
         Row: {
           aerobic_count: number | null
@@ -552,6 +600,7 @@ export type Database = {
       pools: {
         Row: {
           address: string | null
+          assigned_employees: Json
           client_id: string | null
           closing_date: string | null
           company_id: string
@@ -578,6 +627,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          assigned_employees?: Json
           client_id?: string | null
           closing_date?: string | null
           company_id: string
@@ -604,6 +654,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          assigned_employees?: Json
           client_id?: string | null
           closing_date?: string | null
           company_id?: string
