@@ -89,6 +89,15 @@ function PiscinasPage() {
     },
   });
 
+  const q = busqueda.trim().toLowerCase();
+  const piscinasFiltradas = (pools ?? []).filter((p) =>
+    !q
+      ? true
+      : [p.name, p.address, p.status].filter(Boolean).some((v) => String(v).toLowerCase().includes(q)),
+  );
+
+
+
   if (!loadingEmpresa && !companyId) {
     return (
       <AppShell>
