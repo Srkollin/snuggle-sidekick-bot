@@ -132,39 +132,6 @@ export const CADUCIDAD_ENLACE = [
   { label: "30 días", value: "720" },
 ] as const;
 
-export const ESTADOS_EMPLEADO: Record<string, string> = {
-  en_turno: "En turno",
-  fuera_de_turno: "Fuera de turno",
-  baja: "De baja",
-  despedido: "Despedido",
-};
-
-export const ESTADO_CIVIL = ["Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a", "Otro"] as const;
-
-export const NIVEL_ESTUDIOS = [
-  "Sin estudios",
-  "Primaria",
-  "ESO",
-  "Bachillerato",
-  "FP",
-  "Universitario",
-] as const;
-
-export const TIPOS_CLIENTE = [
-  "Particular",
-  "Comunidad de propietarios",
-  "Administrador de fincas",
-  "Empresa / Negocio",
-  "Ayuntamiento / Entidad pública",
-] as const;
-
-export const METODOS_PAGO = [
-  "Transferencia",
-  "Domiciliación bancaria",
-  "Efectivo",
-  "Otro",
-] as const;
-
 export const TIPOS_CLIENTE = [
   "Particular",
   "Comunidad de vecinos",
