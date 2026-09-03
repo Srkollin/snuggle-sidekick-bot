@@ -142,12 +142,9 @@ export function PiscinaForm({
         photoPath = path;
       }
 
-      const { error } = await supabase.from("pools").insert({
-        company_id: companyId,
-        created_by: userId,
+      const payload = {
         name: name.trim(),
         address: address.trim() || null,
-        photo_path: photoPath,
         status,
         dosing_type: dosing,
         dosing_other: dosing === "Otros" ? dosingOther.trim() || null : null,
@@ -162,13 +159,28 @@ export function PiscinaForm({
         other_staff:
           hasOthers === "si" ? others.filter((o) => o.tipo.trim()).map((o) => ({ ...o, tipo: o.tipo.trim() })) : [],
         client_id: clientId || null,
+        assigned_employees: assigned,
         open_all_year: openAllYear === "si",
         opening_date: openAllYear === "si" ? null : openingDate || null,
         closing_date: openAllYear === "si" ? null : closingDate || null,
-      } as never);
-      if (error) throw error;
-      toast.success("Piscina registrada.");
+      };
+
+      if (isEdit) {
+        const { error } = await supabase
+          .from("pools")
+          .update({ ...payload, ...(photoPath ? { photo_path: photoPath } : {}) } as never)
+          .eq("id", pool!.id);
+        if (error) throw error;
+        toast.success("Piscina actualizada.");
+      } else {
+        const { error } = await supabase
+          .from("pools")
+          .insert({ ...payload, company_id: companyId, created_by: userId, photo_path: photoPath } as never);
+        if (error) throw error;
+        toast.success("Piscina registrada.");
+      }
       onSaved();
+
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "No se ha podido registrar la piscina.");
     } finally {
