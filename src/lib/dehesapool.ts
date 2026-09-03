@@ -164,3 +164,51 @@ export const METODOS_PAGO = [
   "Efectivo",
   "Otro",
 ] as const;
+
+export const TIPOS_CLIENTE = [
+  "Particular",
+  "Comunidad de vecinos",
+  "Administrador de fincas",
+  "Hotel o complejo turístico",
+  "Instalación deportiva",
+  "Empresa u organismo",
+] as const;
+
+export const METODOS_PAGO = [
+  "Transferencia bancaria",
+  "Domiciliación bancaria",
+  "Efectivo",
+  "Tarjeta",
+] as const;
+
+/** Todos los roles asignables a un empleado (derivados de la jerarquía). */
+export const ROLES_EMPLEADO = JERARQUIA.flatMap((a) => a.roles);
+
+export const ESTADOS_EMPLEADO = ["en_turno", "fuera_de_turno", "de_baja", "despedido"] as const;
+
+export const ESTADO_EMPLEADO_LABEL: Record<string, string> = {
+  en_turno: "En turno",
+  fuera_de_turno: "Fuera de turno",
+  de_baja: "De baja",
+  despedido: "Despedido",
+};
+
+export const ESTADO_CIVIL = ["Soltero/a", "Casado/a", "Pareja de hecho", "Divorciado/a", "Viudo/a"] as const;
+
+export const NIVEL_ESTUDIOS = [
+  "Sin estudios",
+  "Educación primaria",
+  "ESO",
+  "Bachillerato",
+  "Formación profesional",
+  "Universidad",
+] as const;
+
+/** Titulación obligatoria según el rol asignado. */
+export const TITULACION_POR_ROL: Record<string, "socorrista" | "ats" | "tecnico"> = {
+  Socorrista: "socorrista",
+  "ATS / personal sanitario": "ats",
+  "Técnico de mantenimiento": "tecnico",
+  "Técnico de reparación": "tecnico",
+  Instalador: "tecnico",
+};
