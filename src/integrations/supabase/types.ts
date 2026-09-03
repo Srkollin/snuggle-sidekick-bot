@@ -393,6 +393,147 @@ export type Database = {
           },
         ]
       }
+      pool_records: {
+        Row: {
+          aerobic_count: number | null
+          alerts: Json
+          bathers_count: number | null
+          bromine_total: number | null
+          combined_chlorine: number | null
+          company_id: string
+          control_type: string
+          corrective_action: string | null
+          created_at: string
+          created_by: string
+          disinfectant_type: string | null
+          ecoli: string | null
+          free_chlorine: number | null
+          has_incident: boolean
+          id: string
+          incident_description: string | null
+          incident_photo_path: string | null
+          isocyanuric_acid: number | null
+          lab_certificate_path: string | null
+          legionella: number | null
+          ph: number
+          pool_id: string
+          pseudomonas: string | null
+          recirculation_hours: number | null
+          record_date: string
+          record_time: string
+          redox: number | null
+          reopening_time: string | null
+          signed_at: string | null
+          signed_by: string | null
+          technician_name: string | null
+          total_coliforms: number | null
+          transparency: string | null
+          turbidity: number
+          updated_at: string
+          vessel: string
+          vessel_status: string
+          water_meter: number | null
+          water_temperature: number | null
+        }
+        Insert: {
+          aerobic_count?: number | null
+          alerts?: Json
+          bathers_count?: number | null
+          bromine_total?: number | null
+          combined_chlorine?: number | null
+          company_id: string
+          control_type?: string
+          corrective_action?: string | null
+          created_at?: string
+          created_by: string
+          disinfectant_type?: string | null
+          ecoli?: string | null
+          free_chlorine?: number | null
+          has_incident?: boolean
+          id?: string
+          incident_description?: string | null
+          incident_photo_path?: string | null
+          isocyanuric_acid?: number | null
+          lab_certificate_path?: string | null
+          legionella?: number | null
+          ph: number
+          pool_id: string
+          pseudomonas?: string | null
+          recirculation_hours?: number | null
+          record_date: string
+          record_time: string
+          redox?: number | null
+          reopening_time?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
+          technician_name?: string | null
+          total_coliforms?: number | null
+          transparency?: string | null
+          turbidity: number
+          updated_at?: string
+          vessel?: string
+          vessel_status?: string
+          water_meter?: number | null
+          water_temperature?: number | null
+        }
+        Update: {
+          aerobic_count?: number | null
+          alerts?: Json
+          bathers_count?: number | null
+          bromine_total?: number | null
+          combined_chlorine?: number | null
+          company_id?: string
+          control_type?: string
+          corrective_action?: string | null
+          created_at?: string
+          created_by?: string
+          disinfectant_type?: string | null
+          ecoli?: string | null
+          free_chlorine?: number | null
+          has_incident?: boolean
+          id?: string
+          incident_description?: string | null
+          incident_photo_path?: string | null
+          isocyanuric_acid?: number | null
+          lab_certificate_path?: string | null
+          legionella?: number | null
+          ph?: number
+          pool_id?: string
+          pseudomonas?: string | null
+          recirculation_hours?: number | null
+          record_date?: string
+          record_time?: string
+          redox?: number | null
+          reopening_time?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
+          technician_name?: string | null
+          total_coliforms?: number | null
+          transparency?: string | null
+          turbidity?: number
+          updated_at?: string
+          vessel?: string
+          vessel_status?: string
+          water_meter?: number | null
+          water_temperature?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pool_records_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pool_records_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "pools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pools: {
         Row: {
           address: string | null
