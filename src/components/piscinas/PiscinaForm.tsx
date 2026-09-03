@@ -123,6 +123,43 @@ export function PiscinaForm({
     setPreview(f ? URL.createObjectURL(f) : null);
   }
 
+  /** Al asignar un empleado a una piscina entra en turno; al desasignarlo sale
+   *  si no queda asignado a ninguna otra piscina. */
+  async function sincronizarTurnos(poolId: string | null, antes: string[], ahora: string[]) {
+    const anadidos = ahora.filter((id) => !antes.includes(id));
+    const quitados = antes.filter((id) => !ahora.includes(id));
+
+    if (anadidos.length) {
+      await supabase
+        .from("employees")
+        .update({ work_status: "en_turno" } as never)
+        .in("id", anadidos)
+        .eq("company_id", companyId)
+        .in("work_status", ["fuera_de_turno", "en_turno"]);
+    }
+
+    if (quitados.length) {
+      const { data: otras } = await supabase
+        .from("pools")
+        .select("id, assigned_employees")
+        .eq("company_id", companyId);
+      const sigueAsignado = new Set<string>();
+      ((otras ?? []) as unknown as { id: string; assigned_employees: string[] }[]).forEach((p) => {
+        if (poolId && p.id === poolId) return;
+        (p.assigned_employees ?? []).forEach((id) => sigueAsignado.add(id));
+      });
+      const liberar = quitados.filter((id) => !sigueAsignado.has(id));
+      if (liberar.length) {
+        await supabase
+          .from("employees")
+          .update({ work_status: "fuera_de_turno" } as never)
+          .in("id", liberar)
+          .eq("company_id", companyId)
+          .eq("work_status", "en_turno");
+      }
+    }
+  }
+
   async function submit() {
     if (!name.trim()) {
       toast.error("Indica el nombre de la piscina.");
@@ -171,12 +208,16 @@ export function PiscinaForm({
           .update({ ...payload, ...(photoPath ? { photo_path: photoPath } : {}) } as never)
           .eq("id", pool!.id);
         if (error) throw error;
+        await sincronizarTurnos(pool!.id, pool?.assigned_employees ?? [], assigned);
         toast.success("Piscina actualizada.");
       } else {
-        const { error } = await supabase
+        const { data: creada, error } = await supabase
           .from("pools")
-          .insert({ ...payload, company_id: companyId, created_by: userId, photo_path: photoPath } as never);
+          .insert({ ...payload, company_id: companyId, created_by: userId, photo_path: photoPath } as never)
+          .select("id")
+          .single();
         if (error) throw error;
+        await sincronizarTurnos((creada as { id: string } | null)?.id ?? null, [], assigned);
         toast.success("Piscina registrada.");
       }
       onSaved();
