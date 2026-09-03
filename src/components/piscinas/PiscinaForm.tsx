@@ -176,6 +176,69 @@ export function PiscinaForm({
         </Field>
       </Section>
 
+      <Section title="Cliente">
+        <Field label="Buscar cliente">
+          <Input
+            value={clientSearch}
+            onChange={(e) => setClientSearch(e.target.value)}
+            placeholder="Escribe para filtrar"
+          />
+        </Field>
+        <Field label="Cliente asociado">
+          <Select value={clientId} onValueChange={setClientId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Sin cliente asociado" />
+            </SelectTrigger>
+            <SelectContent>
+              {filteredClients.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name} · {c.client_type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="justify-self-start"
+          onClick={() => setNewClientOpen(true)}
+        >
+          <Plus className="mr-1 size-4" /> Crear cliente nuevo
+        </Button>
+      </Section>
+
+      <Section title="Temporada">
+        <YesNo label="¿Está abierta todo el año?" value={openAllYear} onChange={setOpenAllYear} />
+        {openAllYear === "no" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Fecha de apertura">
+              <Input type="date" value={openingDate} onChange={(e) => setOpeningDate(e.target.value)} />
+            </Field>
+            <Field label="Fecha de cierre">
+              <Input type="date" value={closingDate} onChange={(e) => setClosingDate(e.target.value)} />
+            </Field>
+          </div>
+        )}
+      </Section>
+
+      <Dialog open={newClientOpen} onOpenChange={setNewClientOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-display">Nuevo cliente</DialogTitle>
+          </DialogHeader>
+          <ClienteForm
+            companyId={companyId}
+            userId={userId}
+            onSaved={() => {
+              setNewClientOpen(false);
+              queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
       <Section title="Tratamiento principal">
         <Field label="Tipo de dosificación">
           <Select value={dosing} onValueChange={setDosing}>
