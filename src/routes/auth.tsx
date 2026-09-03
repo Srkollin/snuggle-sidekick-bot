@@ -41,7 +41,11 @@ function AuthPage() {
     <main className="min-h-screen bg-gradient-to-b from-secondary/60 to-background px-4 py-10">
       <div className="mx-auto max-w-3xl">
         <Link to="/" className="mb-8 inline-flex items-center gap-2 font-display text-lg font-bold">
-          <Waves className="size-5 text-primary" /> Dehesapool
+          <Waves className="size-5 text-primary" />
+          <span>
+            <span className="text-primary">Dehesa</span>
+            <span className="text-foreground">pool</span>
+          </span>
         </Link>
 
         <Tabs defaultValue="registro">
