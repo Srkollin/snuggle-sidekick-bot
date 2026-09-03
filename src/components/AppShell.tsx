@@ -1,6 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  BookOpen,
   Building2,
   LayoutDashboard,
   LogOut,
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/panel", label: "Dashboard", icon: LayoutDashboard },
   { to: "/piscinas", label: "Piscinas", icon: Waves },
+  { to: "/libro-registros", label: "Libro de registros", icon: BookOpen },
   { to: "/empleados", label: "Empleados", icon: Users },
   { to: "/rutas", label: "Rutas", icon: RouteIcon },
   { to: "/clientes", label: "Clientes", icon: Building2 },
@@ -49,7 +51,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen bg-muted/30">
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background md:flex">
         <Link to="/panel" className="flex items-center gap-2 border-b border-border px-5 py-4 font-display text-lg font-bold">
-          <Waves className="size-5 text-primary" /> Dehesapool
+          <Waves className="size-5 text-primary" />
+          <span>
+            <span className="text-primary">Dehesa</span>
+            <span className="text-foreground">pool</span>
+          </span>
         </Link>
 
         <nav className="flex flex-1 flex-col gap-1 p-3">
@@ -98,7 +104,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 md:px-8 md:py-8">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-border bg-background/95 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-7 border-t border-border bg-background/95 backdrop-blur md:hidden">
         {NAV.map((item) => (
           <Link
             key={item.to}
