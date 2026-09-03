@@ -357,6 +357,18 @@ export function RegistroSanitarioForm({
               onChange={(e) => set("recirculation_hours", e.target.value)}
             />
           </Campo>
+          <Campo label="Hora de apertura del vaso">
+            <Input type="time" value={f.opening_time} onChange={(e) => set("opening_time", e.target.value)} />
+          </Campo>
+          <Campo label="Hora de cierre del vaso">
+            <Input type="time" value={f.closing_time} onChange={(e) => set("closing_time", e.target.value)} />
+          </Campo>
+          <Campo label="Descanso: inicio (si tiene)">
+            <Input type="time" value={f.rest_start} onChange={(e) => set("rest_start", e.target.value)} />
+          </Campo>
+          <Campo label="Descanso: fin (si tiene)">
+            <Input type="time" value={f.rest_end} onChange={(e) => set("rest_end", e.target.value)} />
+          </Campo>
         </div>
       </Seccion>
 
