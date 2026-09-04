@@ -331,6 +331,25 @@ export function PiscinaForm({
             </Field>
           </div>
         )}
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field label="Hora de apertura">
+            <Input type="time" value={openingTime} onChange={(e) => setOpeningTime(e.target.value)} />
+          </Field>
+          <Field label="Hora de cierre">
+            <Input type="time" value={closingTime} onChange={(e) => setClosingTime(e.target.value)} />
+          </Field>
+        </div>
+        <YesNo label="¿Tiene descanso?" value={hasRest} onChange={setHasRest} />
+        {hasRest === "si" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Inicio del descanso">
+              <Input type="time" value={restStart} onChange={(e) => setRestStart(e.target.value)} />
+            </Field>
+            <Field label="Fin del descanso">
+              <Input type="time" value={restEnd} onChange={(e) => setRestEnd(e.target.value)} />
+            </Field>
+          </div>
+        )}
       </Section>
 
       <Dialog open={newClientOpen} onOpenChange={setNewClientOpen}>
