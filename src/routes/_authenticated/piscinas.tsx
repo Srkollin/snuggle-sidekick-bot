@@ -485,6 +485,31 @@ function DetallePiscina({
           />
         </Section>
 
+        <Section title="Temporada y horario">
+          <Row
+            label="Temporada"
+            value={
+              pool.open_all_year
+                ? "Abierta todo el año"
+                : [pool.opening_date, pool.closing_date].filter(Boolean).join(" → ") || "—"
+            }
+          />
+          <Row
+            label="Horario"
+            value={
+              pool.opening_time || pool.closing_time
+                ? `${pool.opening_time ?? "—"} – ${pool.closing_time ?? "—"}`
+                : "—"
+            }
+          />
+          <Row
+            label="Descanso"
+            value={
+              pool.rest_start || pool.rest_end ? `${pool.rest_start ?? "—"} – ${pool.rest_end ?? "—"}` : "Sin descanso"
+            }
+          />
+        </Section>
+
         <Section title="Tratamiento del agua">
           <Row
             label="Tipo de dosificación"
