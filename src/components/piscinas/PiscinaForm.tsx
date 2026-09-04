@@ -40,6 +40,10 @@ export type PiscinaEditable = {
   closing_date?: string | null;
   open_all_year?: boolean;
   assigned_employees?: string[];
+  opening_time?: string | null;
+  closing_time?: string | null;
+  rest_start?: string | null;
+  rest_end?: string | null;
 };
 
 export function PiscinaForm({
@@ -67,6 +71,11 @@ export function PiscinaForm({
   const [openingDate, setOpeningDate] = useState(pool?.opening_date ?? "");
   const [closingDate, setClosingDate] = useState(pool?.closing_date ?? "");
   const [openAllYear, setOpenAllYear] = useState(pool?.open_all_year ? "si" : "no");
+  const [openingTime, setOpeningTime] = useState(pool?.opening_time ?? "");
+  const [closingTime, setClosingTime] = useState(pool?.closing_time ?? "");
+  const [hasRest, setHasRest] = useState(pool?.rest_start || pool?.rest_end ? "si" : "no");
+  const [restStart, setRestStart] = useState(pool?.rest_start ?? "");
+  const [restEnd, setRestEnd] = useState(pool?.rest_end ?? "");
 
   const queryClient = useQueryClient();
   const { data: clients } = useQuery({
@@ -200,6 +209,10 @@ export function PiscinaForm({
         open_all_year: openAllYear === "si",
         opening_date: openAllYear === "si" ? null : openingDate || null,
         closing_date: openAllYear === "si" ? null : closingDate || null,
+        opening_time: openingTime || null,
+        closing_time: closingTime || null,
+        rest_start: hasRest === "si" ? restStart || null : null,
+        rest_end: hasRest === "si" ? restEnd || null : null,
       };
 
       if (isEdit) {
@@ -315,6 +328,25 @@ export function PiscinaForm({
             </Field>
             <Field label="Fecha de cierre">
               <Input type="date" value={closingDate} onChange={(e) => setClosingDate(e.target.value)} />
+            </Field>
+          </div>
+        )}
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field label="Hora de apertura">
+            <Input type="time" value={openingTime} onChange={(e) => setOpeningTime(e.target.value)} />
+          </Field>
+          <Field label="Hora de cierre">
+            <Input type="time" value={closingTime} onChange={(e) => setClosingTime(e.target.value)} />
+          </Field>
+        </div>
+        <YesNo label="¿Tiene descanso?" value={hasRest} onChange={setHasRest} />
+        {hasRest === "si" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Inicio del descanso">
+              <Input type="time" value={restStart} onChange={(e) => setRestStart(e.target.value)} />
+            </Field>
+            <Field label="Fin del descanso">
+              <Input type="time" value={restEnd} onChange={(e) => setRestEnd(e.target.value)} />
             </Field>
           </div>
         )}

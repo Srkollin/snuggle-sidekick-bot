@@ -56,6 +56,10 @@ type Pool = {
   closing_date: string | null;
   open_all_year: boolean;
   assigned_employees: string[];
+  opening_time: string | null;
+  closing_time: string | null;
+  rest_start: string | null;
+  rest_end: string | null;
 };
 
 type Empleado = { id: string; full_name: string; roles: string[]; work_status: string };
@@ -478,6 +482,31 @@ function DetallePiscina({
           <Row
             label="Cliente asociado"
             value={cliente ? `${cliente.name} · ${cliente.client_type}` : "Sin cliente asociado"}
+          />
+        </Section>
+
+        <Section title="Temporada y horario">
+          <Row
+            label="Temporada"
+            value={
+              pool.open_all_year
+                ? "Abierta todo el año"
+                : [pool.opening_date, pool.closing_date].filter(Boolean).join(" → ") || "—"
+            }
+          />
+          <Row
+            label="Horario"
+            value={
+              pool.opening_time || pool.closing_time
+                ? `${pool.opening_time ?? "—"} – ${pool.closing_time ?? "—"}`
+                : "—"
+            }
+          />
+          <Row
+            label="Descanso"
+            value={
+              pool.rest_start || pool.rest_end ? `${pool.rest_start ?? "—"} – ${pool.rest_end ?? "—"}` : "Sin descanso"
+            }
           />
         </Section>
 
