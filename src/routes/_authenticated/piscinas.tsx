@@ -56,6 +56,10 @@ type Pool = {
   closing_date: string | null;
   open_all_year: boolean;
   assigned_employees: string[];
+  opening_time: string | null;
+  closing_time: string | null;
+  rest_start: string | null;
+  rest_end: string | null;
 };
 
 type Empleado = { id: string; full_name: string; roles: string[]; work_status: string };
