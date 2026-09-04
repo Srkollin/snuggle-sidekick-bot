@@ -209,6 +209,10 @@ export function PiscinaForm({
         open_all_year: openAllYear === "si",
         opening_date: openAllYear === "si" ? null : openingDate || null,
         closing_date: openAllYear === "si" ? null : closingDate || null,
+        opening_time: openingTime || null,
+        closing_time: closingTime || null,
+        rest_start: hasRest === "si" ? restStart || null : null,
+        rest_end: hasRest === "si" ? restEnd || null : null,
       };
 
       if (isEdit) {
