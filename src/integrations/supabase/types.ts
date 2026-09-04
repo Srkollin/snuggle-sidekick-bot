@@ -615,6 +615,7 @@ export type Database = {
           assigned_employees: Json
           client_id: string | null
           closing_date: string | null
+          closing_time: string | null
           company_id: string
           created_at: string
           created_by: string
@@ -632,8 +633,11 @@ export type Database = {
           name: string
           open_all_year: boolean
           opening_date: string | null
+          opening_time: string | null
           other_staff: Json
           photo_path: string | null
+          rest_end: string | null
+          rest_start: string | null
           status: string
           updated_at: string
         }
@@ -642,6 +646,7 @@ export type Database = {
           assigned_employees?: Json
           client_id?: string | null
           closing_date?: string | null
+          closing_time?: string | null
           company_id: string
           created_at?: string
           created_by: string
@@ -659,8 +664,11 @@ export type Database = {
           name: string
           open_all_year?: boolean
           opening_date?: string | null
+          opening_time?: string | null
           other_staff?: Json
           photo_path?: string | null
+          rest_end?: string | null
+          rest_start?: string | null
           status?: string
           updated_at?: string
         }
@@ -669,6 +677,7 @@ export type Database = {
           assigned_employees?: Json
           client_id?: string | null
           closing_date?: string | null
+          closing_time?: string | null
           company_id?: string
           created_at?: string
           created_by?: string
@@ -686,8 +695,11 @@ export type Database = {
           name?: string
           open_all_year?: boolean
           opening_date?: string | null
+          opening_time?: string | null
           other_staff?: Json
           photo_path?: string | null
+          rest_end?: string | null
+          rest_start?: string | null
           status?: string
           updated_at?: string
         }
