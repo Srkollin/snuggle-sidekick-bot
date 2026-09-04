@@ -71,6 +71,11 @@ export function PiscinaForm({
   const [openingDate, setOpeningDate] = useState(pool?.opening_date ?? "");
   const [closingDate, setClosingDate] = useState(pool?.closing_date ?? "");
   const [openAllYear, setOpenAllYear] = useState(pool?.open_all_year ? "si" : "no");
+  const [openingTime, setOpeningTime] = useState(pool?.opening_time ?? "");
+  const [closingTime, setClosingTime] = useState(pool?.closing_time ?? "");
+  const [hasRest, setHasRest] = useState(pool?.rest_start || pool?.rest_end ? "si" : "no");
+  const [restStart, setRestStart] = useState(pool?.rest_start ?? "");
+  const [restEnd, setRestEnd] = useState(pool?.rest_end ?? "");
 
   const queryClient = useQueryClient();
   const { data: clients } = useQuery({
