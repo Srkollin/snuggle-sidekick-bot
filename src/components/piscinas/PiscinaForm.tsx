@@ -40,6 +40,10 @@ export type PiscinaEditable = {
   closing_date?: string | null;
   open_all_year?: boolean;
   assigned_employees?: string[];
+  opening_time?: string | null;
+  closing_time?: string | null;
+  rest_start?: string | null;
+  rest_end?: string | null;
 };
 
 export function PiscinaForm({
