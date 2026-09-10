@@ -11,7 +11,6 @@ import {
   ShieldCheck,
   Users,
   Waves,
-  Wrench,
 } from "lucide-react";
 
 import { ThemeToggle } from "@/components/ThemeToggle";
