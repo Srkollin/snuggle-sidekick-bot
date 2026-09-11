@@ -766,7 +766,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      invite_token_in_my_company: { Args: { _token: string }; Returns: boolean }
+      is_my_company_folder: { Args: { _folder: string }; Returns: boolean }
+      is_valid_invite_token: { Args: { _token: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
